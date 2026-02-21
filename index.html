@@ -40,21 +40,30 @@
                 <option>রতন বিশ্বাস</option><option>সবুজ বিশ্বাস</option>
             </select>
             <input type="text" id="status" placeholder="আপনার স্ট্যাটাস...">
-            <input type="text" id="msg" placeholder="মেসেজবোর্ডে কিছু লিখুন...">
+            <input type="text" id="msg" placeholder="মেসেজ দিন...">
             <input type="password" id="pass" placeholder="পাসওয়ার্ড (friend123)">
             <button class="btn btn-post" onclick="updateApp()">পোস্ট করুন</button>
-            <button class="btn btn-call" onclick="startCall()">🎥 ভিডিও কল শুরু করুন</button>
+            <button class="btn btn-call" onclick="startCall()">🎥 ভিডিও কল</button>
         </div>
 
         <div id="video-area"></div>
 
+        <div class="card" style="border-left: 5px solid var(--fb-blue);">
+            <h3 style="color: var(--fb-blue); margin-top:0;">🤖 পদক্ষেপ ডিজিটাল AI</h3>
+            <div id="aiResponse" style="background: #f0f2f5; padding: 10px; border-radius: 8px; font-size: 13px; min-height: 40px; margin-bottom: 10px;">
+                হ্যালো! আমি আপনার স্মার্ট বন্ধু। কিছু জানতে চান?
+            </div>
+            <input type="text" id="aiInp" placeholder="AI-কে প্রশ্ন করুন...">
+            <button class="btn" style="background: var(--fb-blue);" onclick="askSmartAI()">জিজ্ঞাসা করুন</button>
+        </div>
+
         <div class="card">
-            <h3 style="margin-top:0; font-size: 16px;">বন্ধুদের স্ট্যাটাস</h3>
+            <h3>বন্ধুদের খবর</h3>
             <div class="status-grid" id="statusGrid"></div>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0; font-size: 16px;">মেসেজ বোর্ড</h3>
+            <h3>মেসেজ বোর্ড</h3>
             <div id="msgList" class="msg-list">
                 <p style="color:#999; text-align:center;">কোনো মেসেজ নেই</p>
             </div>
@@ -82,7 +91,6 @@
 
         function updateApp() {
             if(document.getElementById('pass').value !== "friend123") return alert("ভুল পাসওয়ার্ড!");
-            
             const u = document.getElementById('user').value;
             const s = document.getElementById('status').value;
             const m = document.getElementById('msg').value;
@@ -94,12 +102,27 @@
                 list.innerHTML = `<div><div class="msg-bubble"><strong>${u}:</strong> ${m}</div></div>` + list.innerHTML;
             }
             document.getElementById('pass').value = "";
-            alert("সফলভাবে পোস্ট হয়েছে!");
+            alert("সফল হয়েছে!");
+        }
+
+        function askSmartAI() {
+            const query = document.getElementById('aiInp').value;
+            const responseBox = document.getElementById('aiResponse');
+            if(!query) return alert("কিছু লিখুন!");
+            
+            responseBox.innerText = "ভাবছি...";
+            
+            const replies = ["চমৎকার প্রশ্ন!", "পদক্ষেপ ডিজিটাল অ্যাপটি দুর্দান্ত!", "আমি আপনার আড্ডায় থাকতে পেরে খুশি।", "হুমম, খুব গভীর প্রশ্ন।"];
+            const randomReply = replies[Math.floor(Math.random() * replies.length)];
+            
+            setTimeout(() => {
+                responseBox.innerText = randomReply;
+            }, 500);
+            document.getElementById('aiInp').value = "";
         }
 
         function startCall() {
-            const p = prompt("কল শুরু করতে পাসওয়ার্ড দিন:");
-            if(p !== "friend123") return alert("ভুল পাসওয়ার্ড!");
+            if(prompt("পাসওয়ার্ড দিন:") !== "friend123") return alert("ভুল!");
             document.getElementById('video-area').style.display = "block";
             new JitsiMeetExternalAPI("meet.jit.si", {
                 roomName: "Aadda_Blue_Padakkhep_2026",
@@ -110,38 +133,5 @@
         }
         render();
     </script>
-</body><div class="card" style="border-top: 4px solid #1877F2;">
-    <h3 style="color: #1877F2;">🤖 পদক্ষেপে ডিজিটাল AI (অ্যাসিস্ট্যান্ট)</h3>
-    <div id="aiResponse" style="background: #f0f2f5; padding: 10px; border-radius: 8px; font-size: 13px; min-height: 40px; margin-bottom: 10px;">
-        হ্যালো! আমি আপনার আড্ডা বোর্ডের AI। কিছু জানতে চান?
-    </div>
-    <input type="text" id="aiInp" placeholder="আমাকে কিছু জিজ্ঞাসা করুন...">
-    <button class="btn" style="background: #1877F2;" onclick="askAI()">AI-কে জিজ্ঞাসা করুন</button>
-</div>
-
-<script>
-    async function askAI() {
-        const query = document.getElementById('aiInp').value;
-        const responseBox = document.getElementById('aiResponse');
-        
-        if(!query) return alert("কিছু তো লিখুন!");
-        
-        responseBox.innerText = "ভাবছি... একটু দাঁড়ান...";
-        
-        try {
-            // এটি একটি সহজ ফ্রি চ্যাটবট সার্ভিস যা আপনার প্রশ্নের উত্তর দেবে
-            const res = await fetch(`https://api.simsimi.net/v2/?text=${encodeURIComponent(query)}&lc=bn`);
-            const data = await res.json();
-            
-            if(data.success) {
-                responseBox.innerText = data.success;
-            } else {
-                responseBox.innerText = "দুঃখিত, আমি এখন উত্তর দিতে পারছি না।";
-            }
-        } catch (error) {
-            responseBox.innerText = "ইন্টারনেট কানেকশন চেক করুন।";
-        }
-        document.getElementById('aiInp').value = "";
-    }
-</script>
+</body>
 </html>
