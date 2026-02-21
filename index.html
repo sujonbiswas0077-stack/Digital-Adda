@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পদক্ষেপ ডিজিটাল আড্ডাঘর</title>
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <style>
+        :root { --fb-blue: #1877F2; --fb-bg: #F0F2F5; --fb-white: #FFFFFF; }
+        body { font-family: sans-serif; background-color: var(--fb-bg); margin: 0; padding: 0; }
+        .navbar { background: var(--fb-white); padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .navbar h1 { color: var(--fb-blue); margin: 0; font-size: 20px; }
+        .container { max-width: 500px; margin: auto; padding: 15px; }
+        .card { background: var(--fb-white); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        select, input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box; background: #f5f6f7; }
+        .btn { width: 100%; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; margin-top: 5px; font-size: 16px; }
+        .btn-post { background: var(--fb-blue); }
+        .btn-call { background: #42b72a; margin-top: 10px; }
+        .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .friend-box { background: #f0f2f5; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #e4e6eb; }
+        .friend-name { font-weight: bold; color: var(--fb-blue); font-size: 14px; }
+        .friend-status { font-size: 12px; color: #65676b; margin-top: 4px; }
+        #video-area { width: 100%; height: 400px; display: none; margin-top: 10px; border-radius: 8px; overflow: hidden; border: 2px solid var(--fb-blue); }
+        .msg-list { max-height: 250px; overflow-y: auto; margin-top: 10px; }
+        .msg-bubble { background: #e4e6eb; padding: 8px 12px; border-radius: 18px; margin-bottom: 8px; font-size: 13px; display: inline-block; max-width: 85%; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar"><h1>Digital Aadda</h1></div>
+
+    <div class="container">
+        <div class="card">
+            <h3 style="margin-top:0; font-size: 16px;">আপনার আপডেট দিন</h3>
+            <select id="user">
+                <option>সুজন বিশ্বাস</option><option>দীপঙ্কর বিশ্বাস</option>
+                <option>সুজন কুমার</option><option>বিপ্লব বিশ্বাস</option>
+                <option>বিধান বিশ্বাস</option><option>হারান বিশ্বাস</option>
+                <option>বিপুল বিশ্বাস</option><option>মিঠুন বিশ্বাস</option>
+                <option>রতন বিশ্বাস</option><option>সবুজ বিশ্বাস</option>
+            </select>
+            <input type="text" id="status" placeholder="আপনার স্ট্যাটাস...">
+            <input type="text" id="msg" placeholder="মেসেজবোর্ডে কিছু লিখুন...">
+            <input type="password" id="pass" placeholder="পাসওয়ার্ড (friend123)">
+            <button class="btn btn-post" onclick="updateApp()">পোস্ট করুন</button>
+            <button class="btn btn-call" onclick="startCall()">🎥 ভিডিও কল শুরু করুন</button>
+        </div>
+
+        <div id="video-area"></div>
+
+        <div class="card">
+            <h3 style="margin-top:0; font-size: 16px;">বন্ধুদের স্ট্যাটাস</h3>
+            <div class="status-grid" id="statusGrid"></div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; font-size: 16px;">মেসেজ বোর্ড</h3>
+            <div id="msgList" class="msg-list">
+                <p style="color:#999; text-align:center;">কোনো মেসেজ নেই</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let friends = [
+            {name: "সুজন বিশ্বাস", status: "অনলাইন"}, {name: "দীপঙ্কর বিশ্বাস", status: "অনলাইন"},
+            {name: "সুজন কুমার", status: "অনলাইন"}, {name: "বিপ্লব বিশ্বাস", status: "অনলাইন"},
+            {name: "বিধান বিশ্বাস", status: "অনলাইন"}, {name: "হারান বিশ্বাস", status: "অনলাইন"},
+            {name: "বিপুল বিশ্বাস", status: "অনলাইন"}, {name: "মিঠুন বিশ্বাস", status: "অনলাইন"},
+            {name: "রতন বিশ্বাস", status: "অনলাইন"}, {name: "সবুজ বিশ্বাস", status: "অনলাইন"}
+        ];
+
+        function render() {
+            const grid = document.getElementById('statusGrid');
+            grid.innerHTML = friends.map(f => `
+                <div class="friend-box">
+                    <div class="friend-name">${f.name}</div>
+                    <div class="friend-status">${f.status}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateApp() {
+            if(document.getElementById('pass').value !== "friend123") return alert("ভুল পাসওয়ার্ড!");
+            
+            const u = document.getElementById('user').value;
+            const s = document.getElementById('status').value;
+            const m = document.getElementById('msg').value;
+
+            if(s) { friends.find(f => f.name === u).status = s; render(); }
+            if(m) {
+                const list = document.getElementById('msgList');
+                if(list.innerText.includes("কোনো মেসেজ নেই")) list.innerHTML = "";
+                list.innerHTML = `<div><div class="msg-bubble"><strong>${u}:</strong> ${m}</div></div>` + list.innerHTML;
+            }
+            document.getElementById('pass').value = "";
+            alert("সফলভাবে পোস্ট হয়েছে!");
+        }
+
+        function startCall() {
+            const p = prompt("কল শুরু করতে পাসওয়ার্ড দিন:");
+            if(p !== "friend123") return alert("ভুল পাসওয়ার্ড!");
+            document.getElementById('video-area').style.display = "block";
+            new JitsiMeetExternalAPI("meet.jit.si", {
+                roomName: "Aadda_Blue_Padakkhep_2026",
+                width: '100%', height: 400,
+                parentNode: document.querySelector('#video-area'),
+                userInfo: { displayName: document.getElementById('user').value }
+            });
+        }
+        render();
+    </script>
+</body>
+</html>
