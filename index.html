@@ -110,5 +110,38 @@
         }
         render();
     </script>
-</body>
+</body><div class="card" style="border-top: 4px solid #1877F2;">
+    <h3 style="color: #1877F2;">🤖 পদক্ষেপে ডিজিটাল AI (অ্যাসিস্ট্যান্ট)</h3>
+    <div id="aiResponse" style="background: #f0f2f5; padding: 10px; border-radius: 8px; font-size: 13px; min-height: 40px; margin-bottom: 10px;">
+        হ্যালো! আমি আপনার আড্ডা বোর্ডের AI। কিছু জানতে চান?
+    </div>
+    <input type="text" id="aiInp" placeholder="আমাকে কিছু জিজ্ঞাসা করুন...">
+    <button class="btn" style="background: #1877F2;" onclick="askAI()">AI-কে জিজ্ঞাসা করুন</button>
+</div>
+
+<script>
+    async function askAI() {
+        const query = document.getElementById('aiInp').value;
+        const responseBox = document.getElementById('aiResponse');
+        
+        if(!query) return alert("কিছু তো লিখুন!");
+        
+        responseBox.innerText = "ভাবছি... একটু দাঁড়ান...";
+        
+        try {
+            // এটি একটি সহজ ফ্রি চ্যাটবট সার্ভিস যা আপনার প্রশ্নের উত্তর দেবে
+            const res = await fetch(`https://api.simsimi.net/v2/?text=${encodeURIComponent(query)}&lc=bn`);
+            const data = await res.json();
+            
+            if(data.success) {
+                responseBox.innerText = data.success;
+            } else {
+                responseBox.innerText = "দুঃখিত, আমি এখন উত্তর দিতে পারছি না।";
+            }
+        } catch (error) {
+            responseBox.innerText = "ইন্টারনেট কানেকশন চেক করুন।";
+        }
+        document.getElementById('aiInp').value = "";
+    }
+</script>
 </html>
