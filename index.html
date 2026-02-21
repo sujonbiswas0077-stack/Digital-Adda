@@ -19,7 +19,6 @@
         .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .friend-box { background: #f0f2f5; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #e4e6eb; }
         .friend-name { font-weight: bold; color: var(--fb-blue); font-size: 14px; }
-        .friend-status { font-size: 12px; color: #65676b; margin-top: 4px; }
         #video-area { width: 100%; height: 400px; display: none; margin-top: 10px; border-radius: 8px; overflow: hidden; border: 2px solid var(--fb-blue); }
         .msg-list { max-height: 250px; overflow-y: auto; margin-top: 10px; }
         .msg-bubble { background: #e4e6eb; padding: 8px 12px; border-radius: 18px; margin-bottom: 8px; font-size: 13px; display: inline-block; max-width: 85%; }
@@ -53,7 +52,7 @@
             <div id="aiResponse" style="background: #f0f2f5; padding: 10px; border-radius: 8px; font-size: 13px; min-height: 40px; margin-bottom: 10px;">
                 হ্যালো! আমি আপনার স্মার্ট বন্ধু। কিছু জানতে চান?
             </div>
-            <input type="text" id="aiInp" placeholder="AI-কে প্রশ্ন করুন...">
+            <input type="text" id="aiInp" placeholder="AI-কে প্রশ্ন করুন (যেমন: কেমন আছো?)...">
             <button class="btn" style="background: var(--fb-blue);" onclick="askSmartAI()">জিজ্ঞাসা করুন</button>
         </div>
 
@@ -84,7 +83,7 @@
             grid.innerHTML = friends.map(f => `
                 <div class="friend-box">
                     <div class="friend-name">${f.name}</div>
-                    <div class="friend-status">${f.status}</div>
+                    <div style="font-size:12px;">${f.status}</div>
                 </div>
             `).join('');
         }
@@ -105,19 +104,28 @@
             alert("সফল হয়েছে!");
         }
 
+        // নতুন AI ফাংশন যা ইন্টারনেটের ওপর নির্ভর করে না
         function askSmartAI() {
-            const query = document.getElementById('aiInp').value;
+            const query = document.getElementById('aiInp').value.toLowerCase();
             const responseBox = document.getElementById('aiResponse');
             if(!query) return alert("কিছু লিখুন!");
             
             responseBox.innerText = "ভাবছি...";
-            
-            const replies = ["চমৎকার প্রশ্ন!", "পদক্ষেপ ডিজিটাল অ্যাপটি দুর্দান্ত!", "আমি আপনার আড্ডায় থাকতে পেরে খুশি।", "হুমম, খুব গভীর প্রশ্ন।"];
-            const randomReply = replies[Math.floor(Math.random() * replies.length)];
-            
+            let reply = "আপনার কথাটি আমি বুঝতে পারছি না, তবে আপনার সাথে আড্ডা দিতে পেরে আমি খুব খুশি!";
+
+            if(query.includes("কেমন আছো") || query.includes("hi") || query.includes("হ্যালো")) {
+                reply = "আমি খুব ভালো আছি! পদক্ষেপ ডিজিটাল আড্ডাঘরে আপনাকে স্বাগতম।";
+            } else if(query.includes("নাম কি")) {
+                reply = "আমি পদক্ষেপ ডিজিটাল-এর নিজস্ব AI অ্যাসিস্ট্যান্ট।";
+            } else if(query.includes("ভিডিও কল")) {
+                reply = "ভিডিও কল শুরু করতে উপরের সবুজ বাটনে ক্লিক করে পাসওয়ার্ড দিন।";
+            } else if(query.includes("কেমন হয়েছে") || query.includes("ভালো")) {
+                reply = "ধন্যবাদ! আমাদের আড্ডা বোর্ডটি আসলেই চমৎকার হয়েছে!";
+            }
+
             setTimeout(() => {
-                responseBox.innerText = randomReply;
-            }, 500);
+                responseBox.innerText = reply;
+            }, 600);
             document.getElementById('aiInp').value = "";
         }
 
