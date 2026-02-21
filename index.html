@@ -7,18 +7,19 @@
     <script src="https://meet.jit.si/external_api.js"></script>
     <style>
         :root { --fb-blue: #1877F2; --fb-bg: #F0F2F5; --fb-white: #FFFFFF; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--fb-bg); margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--fb-bg); margin: 0; padding: 0; }
         .navbar { background: var(--fb-white); padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .navbar h1 { color: var(--fb-blue); margin: 0; font-size: 22px; font-weight: bold; }
+        .navbar h1 { color: var(--fb-blue); margin: 0; font-size: 24px; }
         .container { max-width: 500px; margin: auto; padding: 15px; }
         .card { background: var(--fb-white); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #dddfe2; border-radius: 8px; box-sizing: border-box; background: #f5f6f7; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; background: var(--fb-blue); font-size: 16px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #dddfe2; border-radius: 8px; box-sizing: border-box; background: #f5f6f7; outline: none; }
+        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; background: var(--fb-blue); font-size: 16px; margin-top: 5px; }
         .friend-row { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 8px; }
         .friend-name { font-weight: bold; color: #1c1e21; font-size: 15px; }
         .friend-status { font-size: 12px; color: #42b72a; font-weight: bold; }
-        .call-btn { background: #e4e6eb; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 20px; }
-        #aiResponse { background: #fff; padding: 15px; border-radius: 10px; font-size: 15px; line-height: 1.8; color: #333; text-align: justify; display: none; border: 1px solid #ddd; margin-top: 15px; }
+        .call-btn { background: #e4e6eb; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: 0.2s; }
+        .call-btn:hover { background: #d8dadf; }
+        #aiResponse { background: #fff; padding: 15px; border-radius: 10px; font-size: 15px; line-height: 1.8; color: #333; text-align: justify; display: none; border: 1px solid #ddd; margin-top: 15px; max-height: 400px; overflow-y: auto; }
         #video-area { width: 100%; height: 450px; display: none; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 3px solid var(--fb-blue); }
     </style>
 </head>
@@ -28,25 +29,25 @@
 
     <div class="container">
         <div class="card">
-            <h3 style="margin-top:0; font-size: 16px;">আপনার আপডেট দিন</h3>
+            <h3 style="margin-top:0; font-size: 16px;">আপনার স্ট্যাটাস আপডেট করুন</h3>
             <select id="user">
                 <option>সুজন বিশ্বাস</option><option>দীপঙ্কর বিশ্বাস</option><option>সুজন কুমার</option><option>বিপ্লব বিশ্বাস</option><option>বিধান বিশ্বাস</option><option>হারান বিশ্বাস</option><option>বিপুল বিশ্বাস</option><option>মিঠুন বিশ্বাস</option><option>রতন বিশ্বাস</option><option>সবুজ বিশ্বাস</option>
             </select>
-            <input type="text" id="status" placeholder="কি করছেন?">
-            <button class="btn" onclick="updateStatus()">আপডেট করুন</button>
+            <input type="text" id="status" placeholder="কি করছেন এখন?">
+            <button class="btn" onclick="updateStatus()">আপডেট দিন</button>
         </div>
 
         <div id="video-area"></div>
 
         <div class="card">
-            <h3 style="margin: 0 0 10px 0; font-size: 16px;">বন্ধুদের তালিকা (Messenger লুক)</h3>
+            <h3 style="margin: 0 0 10px 0; font-size: 16px;">বন্ধুদের তালিকা (Messenger Look)</h3>
             <div id="friendList"></div>
         </div>
 
         <div class="card" style="border-top: 5px solid #ff9800;">
-            <h3 style="color: #ff9800; margin-top:0;">🤖 ডিজিটাল আড্ডা মহা-AI (রচনা কেন্দ্র)</h3>
-            <input type="text" id="aiInp" placeholder="যেকোনো বিষয় (যেমন: ওয়াজ, মোবাইল ফোন)...">
-            <button class="btn" style="background: #ff9800;" onclick="askAdvancedAI()">বিস্তারিত রচনা পড়ুন</button>
+            <h3 style="color: #ff9800; margin-top:0;">🤖 ডিজিটাল আড্ডা সুপার-AI</h3>
+            <input type="text" id="aiInp" placeholder="যেকোনো প্রশ্ন করুন বা বিষয় লিখুন...">
+            <button class="btn" style="background: #ff9800;" onclick="askSuperAI()">বিস্তারিত উত্তর দিন</button>
             <div id="aiResponse"></div>
         </div>
     </div>
@@ -68,47 +69,55 @@
             if(!s) return alert("কিছু লিখুন!");
             friends.find(f => f.name === u).status = s;
             renderFriends();
-            alert("সফলভাবে আপডেট হয়েছে!");
+            alert("আপডেট হয়েছে!");
         }
 
-        async function askAdvancedAI() {
+        async function askSuperAI() {
             const query = document.getElementById('aiInp').value;
             const resBox = document.getElementById('aiResponse');
-            if(!query) return alert("একটি বিষয় লিখুন!");
+            if(!query) return alert("কিছু লিখুন!");
 
             resBox.style.display = "block";
-            resBox.innerHTML = "<b>" + query + "</b> সম্পর্কে বিশাল রচনা তৈরি করছি...";
+            resBox.innerHTML = "<b>" + query + "</b> নিয়ে ভাবছি... একটু সময় দিন।";
 
-            let customText = "";
-            // ওয়াজ ও বিশেষ ধর্মীয় বিষয়ের জন্য ম্যানুয়াল ডিটেইলস
-            if(query.includes("ওয়াজ") || query.includes("Waz")) {
-                customText = `<h3>ওয়াজ সম্পর্কে বিস্তারিত আলোচনা</h3><p>ওয়াজ একটি আরবি শব্দ যার অর্থ হলো উপদেশ বা ধর্মীয় নসিহত। ইসলামি শরিয়তের আলোকে সাধারণ মানুষকে দ্বীনি শিক্ষা ও সঠিক পথের দিকনির্দেশনা দেওয়ার জন্য ধর্মীয় সভায় যে আলোচনা করা হয় তাকেই ওয়াজ বলা হয়। ওয়াজ মাহফিল আমাদের দেশের সংস্কৃতি ও ধর্মের এক অবিচ্ছেদ্য অংশ। এর মাধ্যমে মানুষ কুরআন ও হাদিসের জ্ঞান লাভ করে এবং নৈতিক চরিত্র গঠনে অনুপ্রাণিত হয়। বর্তমানে প্রযুক্তি ব্যবহারের মাধ্যমে ওয়াজ এখন মানুষের হাতে থাকা মোবাইলেও পৌঁছে গিয়েছে।</p>`;
+            // বিশেষ কী-ওয়ার্ড হ্যান্ডলার (ওয়াজ, মোবাইল, কম্পিউটার)
+            let result = "";
+            const q = query.toLowerCase();
+
+            if(q.includes("ওয়াজ")) {
+                result = "<h3>ওয়াজ সম্পর্কে বিস্তারিত রচনা</h3><p>ওয়াজ একটি আরবি শব্দ যার অর্থ উপদেশ প্রদান। ধর্মীয় মাহফিলে কুরআন ও হাদিসের আলোকে জীবন গড়ার নির্দেশনাই হলো ওয়াজ। এটি সমাজ সংস্কারে বড় ভূমিকা রাখে। আমাদের দেশে ওয়াজ মাহফিল একটি জনপ্রিয় সংস্কৃতি।</p>";
+            } else if(q.includes("কম্পিউটার")) {
+                result = "<h3>কম্পিউটার: আধুনিক বিজ্ঞানের বিস্ময়</h3><p>কম্পিউটার এমন একটি ইলেকট্রনিক যন্ত্র যা তথ্য গ্রহণ, প্রক্রিয়াকরণ এবং সংরক্ষণ করতে পারে। ১৮৩৩ সালে চার্লস ব্যাবেজ প্রথম যান্ত্রিক কম্পিউটারের ধারণা দেন। বর্তমানে কম্পিউটার ছাড়া শিক্ষা, চিকিৎসা ও যোগাযোগ কল্পনা করা অসম্ভব।</p>";
+            } else if(q.includes("মোবাইল") || q.includes("ফোন")) {
+                result = "<h3>মোবাইল ফোনের গুরুত্ব</h3><p>মোবাইল ফোন আমাদের জীবনকে হাতের মুঠোয় এনে দিয়েছে। এর মাধ্যমে আমরা মুহূর্তের মধ্যে বিশ্বের যেকোনো প্রান্তে যোগাযোগ করতে পারি। স্মার্টফোনের মাধ্যমে এখন ইন্টারনেট ব্যবহার, ভিডিও কল এবং ব্যাংকিং সেবাও সহজ হয়ে গেছে।</p>";
             }
 
+            // উইকিপিডিয়া থেকে তথ্য খোঁজা
             try {
-                const response = await fetch(`https://bn.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+                const searchWord = query.split(" ").slice(-1)[0]; // বাক্যের শেষ শব্দটি দিয়ে খোঁজা
+                const response = await fetch(`https://bn.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchWord)}`);
                 const data = await response.json();
                 
                 if(data.extract) {
-                    resBox.innerHTML = `<h2>${data.title}</h2><hr><p>${data.extract}</p><p><b>বিস্তারিত:</b> ${query} আধুনিক বিশ্বের প্রেক্ষাপটে অত্যন্ত গুরুত্বপূর্ণ একটি বিষয়। এটি আমাদের চিন্তা ও কাজের পরিধিকে বাড়িয়ে দেয়।</p>${customText}`;
-                } else if(customText) {
-                    resBox.innerHTML = customText;
+                    resBox.innerHTML = `<h2>${data.title}</h2><p>${data.extract}</p><hr>${result}`;
+                } else if(result) {
+                    resBox.innerHTML = result;
                 } else {
-                    resBox.innerHTML = "দুঃখিত, এই বিষয়টি সম্পর্কে আরও পড়াশোনা করছি। দয়া করে অন্য কোনো সঠিক শব্দ দিয়ে চেষ্টা করুন।";
+                    resBox.innerHTML = "দুঃখিত, আমি এই বিষয়টি সম্পর্কে আরও জানার চেষ্টা করছি। দয়া করে নির্দিষ্ট একটি শব্দ লিখুন (যেমন: শুধু 'ওয়াজ' বা 'কম্পিউটার')।";
                 }
             } catch {
-                resBox.innerHTML = customText || "ইন্টারনেট সংযোগ চেক করুন।";
+                resBox.innerHTML = result || "সংযোগ সমস্যা! পরে চেষ্টা করুন।";
             }
         }
 
         function startCall() {
             document.getElementById('video-area').style.display = "block";
             new JitsiMeetExternalAPI("meet.jit.si", {
-                roomName: "Digital_Aadda_Room_2026",
+                roomName: "Digital_Aadda_2026",
                 width: '100%', height: 450,
                 parentNode: document.querySelector('#video-area')
             });
-            window.scrollTo(0, document.getElementById('video-area').offsetTop);
+            window.scrollTo(0, 0);
         }
         renderFriends();
     </script>
