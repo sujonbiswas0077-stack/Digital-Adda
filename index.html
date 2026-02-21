@@ -3,107 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ডিজিটাল আড্ডা</title>
-    <script src="https://meet.jit.si/external_api.js"></script>
+    <title>ডিজিটাল আড্ডা AI - পদক্ষেপ ডিজিটাল</title>
     <style>
-        :root { --fb-blue: #1877F2; --fb-bg: #F0F2F5; --fb-white: #FFFFFF; }
-        body { font-family: sans-serif; background: var(--fb-bg); margin: 0; padding: 0; }
-        .navbar { background: var(--fb-white); padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .navbar h1 { color: var(--fb-blue); margin: 0; }
-        .container { max-width: 500px; margin: auto; padding: 15px; }
-        .card { background: var(--fb-white); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; background: var(--fb-blue); }
-        .friend-row { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #eee; }
-        #aiResponse { display: none; background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-top: 15px; line-height: 1.6; }
-        #video-area { width: 100%; height: 400px; display: none; margin-top: 10px; border-radius: 12px; overflow: hidden; border: 2px solid var(--fb-blue); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+        .ai-container { background: white; width: 100%; max-width: 450px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; border: 2px solid #ff9800; }
+        .header { background: #fff; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; }
+        .header h3 { color: #ff9800; margin: 0; font-size: 20px; }
+        .content-body { padding: 20px; }
+        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #e68a00; }
+        #resultArea { margin-top: 20px; padding: 15px; background: #fff8f0; border-radius: 8px; border: 1px solid #ffe0b2; min-height: 100px; line-height: 1.6; color: #333; }
+        .loading { color: #ff9800; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div class="navbar"><h1>ডিজিটাল আড্ডা</h1></div>
+<div class="ai-container">
+    <div class="header">
+        <h3>🤖 ডিজিটাল আড্ডা AI (বিশ্ব জ্ঞান)</h3>
+    </div>
+    
+    <div class="content-body">
+        <input type="text" id="userInput" placeholder="Tense বা যেকোনো বিষয় লিখুন...">
+        <button onclick="askGeminiAI()">বিস্তারিত জানুন (BN + EN)</button>
 
-    <div class="container">
-        <div class="card">
-            <h3>আপনার স্ট্যাটাস দিন</h3>
-            <select id="user">
-                <option>সুজন বিশ্বাস</option><option>দীপঙ্কর বিশ্বাস</option><option>সুজন কুমার</option>
-                <option>বিপ্লব বিশ্বাস</option><option>বিধান বিশ্বাস</option><option>হারান বিশ্বাস</option>
-            </select>
-            <input type="text" id="status" placeholder="কি করছেন?">
-            <button class="btn" onclick="updateStatus()">আপডেট করুন</button>
-        </div>
-
-        <div id="video-area"></div>
-
-        <div class="card">
-            <h3>বন্ধুদের তালিকা</h3>
-            <div id="friendList"></div>
-        </div>
-
-        <div class="card" style="border-top: 5px solid #ff9800;">
-            <h3 style="color: #ff9800;">🤖 ডিজিটাল আড্ডা AI (বিশ্ব জ্ঞান)</h3>
-            <input type="text" id="aiInp" placeholder="যেকোনো বিষয় লিখুন...">
-            <button class="btn" style="background: #ff9800;" onclick="askWorldAI()">বিস্তারিত জানুন (BN + EN)</button>
-            <div id="aiResponse"></div>
+        <div id="resultArea">
+            অপেক্ষা করছি... একটি শব্দ লিখে সার্চ দিন।
         </div>
     </div>
+</div>
 
-    <script>
-        let friends = [{name: "সুজন বিশ্বাস", status: "অনলাইন"}, {name: "দীপঙ্কর বিশ্বাস", status: "অনলাইন"}, {name: "সুজন কুমার", status: "অনলাইন"}, {name: "বিপ্লব বিশ্বাস", status: "অনলাইন"}, {name: "বিধান বিশ্বাস", status: "অনলাইন"}, {name: "হারান বিশ্বাস", status: "অনলাইন"}];
+<script>
+    // আপনার API KEY এখানে বসান
+    const MY_API_KEY = "এখানে_আপনার_API_KEY_বসান"; 
 
-        function renderFriends() {
-            document.getElementById('friendList').innerHTML = friends.map(f => `
-                <div class="friend-row">
-                    <div><b>${f.name}</b><br><small style="color:green">${f.status}</small></div>
-                    <div><button onclick="startCall()" style="cursor:pointer; border:none; background:none; font-size:20px;">📞</button> <button onclick="startCall()" style="cursor:pointer; border:none; background:none; font-size:20px;">🎥</button></div>
-                </div>`).join('');
+    async function askGeminiAI() {
+        const input = document.getElementById("userInput").value.trim();
+        const result = document.getElementById("resultArea");
+
+        if (!input) {
+            result.innerHTML = "<span style='color:red;'>দুঃখিত, দয়া করে একটি শব্দ লিখুন।</span>";
+            return;
         }
 
-        async function askWorldAI() {
-            const query = document.getElementById('aiInp').value;
-            const resBox = document.getElementById('aiResponse');
-            if(!query) return alert("বিষয়টি লিখুন!");
+        result.innerHTML = "<span class='loading'>AI তথ্য খুঁজছে... দয়া করে অপেক্ষা করুন।</span>";
 
-            resBox.style.display = "block";
-            resBox.innerHTML = "<b>" + query + "</b> সম্পর্কে তথ্য খুঁজছি...";
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${MY_API_KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: `Explain '${input}' in simple Bengali and English together. Use points or tables if needed.` }]
+                    }]
+                })
+            });
 
-            try {
-                // উইকিপিডিয়া থেকে বড় তথ্য আনা
-                const response = await fetch(`https://bn.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
-                const data = await response.json();
+            const data = await response.json();
+            
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                let formattedText = data.candidates[0].content.parts[0].text
+                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // বোল্ড টেক্সট ঠিক করা
+                    .replace(/\n/g, '<br>'); // নিউ লাইন ঠিক করা
                 
-                if(data.extract) {
-                    const contentBN = data.extract;
-                    
-                    // ইংরেজি অনুবাদের জন্য প্রসেস
-                    resBox.innerHTML = `<h3>বাংলায় (In Bengali):</h3><p>${contentBN}</p><hr><h3>ইংরেজিতে (In English):</h3><p id="enTxt">অনুবাদ হচ্ছে...</p>`;
-                    
-                    const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=${encodeURIComponent(contentBN)}`;
-                    const transRes = await fetch(transUrl);
-                    const transData = await transRes.json();
-                    document.getElementById('enTxt').innerText = transData[0].map(x => x[0]).join('');
-                } else {
-                    resBox.innerHTML = "দুঃখিত, বিস্তারিত তথ্য পাওয়া যায়নি। সঠিক একটি শব্দ লিখুন।";
-                }
-            } catch {
-                resBox.innerHTML = "সংযোগ সমস্যা! পরে চেষ্টা করুন।";
+                result.innerHTML = formattedText;
+            } else {
+                result.innerHTML = "দুঃখিত, সঠিক তথ্য পাওয়া যায়নি।";
             }
-        }
 
-        function updateStatus() {
-            const u = document.getElementById('user').value;
-            const s = document.getElementById('status').value;
-            friends.find(f => f.name === u).status = s;
-            renderFriends();
-            alert("সফল হয়েছে!");
+        } catch (error) {
+            result.innerHTML = "সার্ভারে সমস্যা হচ্ছে। আপনার API Key চেক করুন।";
+            console.error(error);
         }
+    }
+</script>
 
-        function startCall() {
-            document.getElementById('video-area').style.display = "block";
-            new JitsiMeetExternalAPI("meet.jit.si", { roomName: "Aadda_2026", width: '100%', height: 400, parentNode: document.querySelector('#video-area') });
-        }
-        renderFriends();
-    </script>
 </body>
 </html>
