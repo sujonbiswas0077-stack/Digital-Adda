@@ -3,73 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মন্দির সেবা - অটো নিউজ ও শেয়ার</title>
+    <title>মন্দির সেবা</title>
     <style>
         :root { --primary: #FF6F00; --accent: #FF3D00; --bg: #FFF3E0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        .navbar { background: var(--primary); padding: 15px; text-align: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
-        .container { max-width: 500px; margin: auto; padding: 15px; padding-bottom: 80px; }
         
-        /* ট্যাব বাটন */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: #FFCC80; color: #E65100; }
+        /* গোল ডিজাইনের হেডার */
+        .navbar { background: var(--primary); padding: 25px 15px; text-align: center; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .navbar h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+        .om-shanti { font-size: 14px; font-weight: bold; background: white; color: var(--primary); display: inline-block; padding: 2px 15px; border-radius: 20px; margin-top: 8px; }
+
+        .container { max-width: 500px; margin: auto; padding: 15px; padding-bottom: 90px; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; background: #FFCC80; color: #E65100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        /* কার্ড ডিজাইন */
-        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 5px solid var(--accent); }
-        .news-title { font-size: 16px; font-weight: bold; color: #BF360C; }
+        .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 6px solid var(--accent); }
+        
+        /* অটো-কমপ্লিট ইনপুট */
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 15px; }
+        .btn { width: 100%; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
+
+        .news-title { font-size: 17px; font-weight: bold; color: #BF360C; }
         .news-link { color: #1877F2; text-decoration: none; font-size: 13px; font-weight: bold; display: block; margin-top: 8px; }
         
-        /* ইনপুট বক্স */
-        input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        /* ম্যাপ বাটন */
+        .map-link { display: inline-block; margin-top: 10px; color: #E65100; font-weight: bold; text-decoration: none; font-size: 14px; }
 
-        .badge { background: #FF3D00; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-bottom: 5px; display: inline-block; }
-        
-        /* ভাসমান শেয়ার বাটন */
-        .share-fab { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .share-fab:hover { transform: scale(1.1); transition: 0.2s; }
+        /* শেয়ার বাটন */
+        .share-fab { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; border: none; width: 65px; height: 65px; border-radius: 50%; font-size: 28px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; }
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <h1>🚩 মন্দির সেবা লাইভ</h1>
-        <p style="margin:0; font-size: 12px;">অটো নিউজ ও ভক্তদের সরাসরি আপডেট</p>
+        <h1>মন্দির সেবা</h1>
+        <div class="om-shanti">ওম তৎ সৎ</div>
     </div>
 
     <div class="container">
+        <div class="card" style="border-left-color: #FF9800;">
+            <input type="text" id="searchInput" list="districts" onkeyup="searchTemple()" placeholder="জেলার নাম লিখুন (উদা: ঢা)...">
+            <datalist id="districts">
+                <option value="ঢাকা"> <option value="চট্টগ্রাম"> <option value="রাজশাহী"> <option value="খুলনা"> <option value="সিলেট"> <option value="বরিশাল"> <option value="রংপুর"> <option value="ময়মনসিংহ"> <option value="কুমিল্লা"> <option value="গাজীপুর">
+            </datalist>
+        </div>
+
         <div class="tabs">
-            <button class="tab-btn active" onclick="showSection('autoNews')">📰 পত্রিকার নিউজ</button>
-            <button class="tab-btn" onclick="showSection('userUpdate')">✍️ তথ্য দিন</button>
+            <button class="tab-btn active" onclick="showSection('autoNews')">📰 নিউজ</button>
+            <button class="tab-btn" onclick="showSection('userUpdate')">✍️ আপডেট দিন</button>
         </div>
 
         <div id="autoNews">
-            <div id="loader" style="text-align:center; padding:20px; color:var(--primary);">খবর সংগ্রহ করা হচ্ছে...</div>
+            <div id="loader" style="text-align:center; padding:20px; color:var(--primary);">খবর খোঁজা হচ্ছে...</div>
             <div id="newsFeed"></div>
         </div>
 
         <div id="userUpdate" style="display: none;">
             <div class="card" style="border-left-color: #4CAF50;">
-                <h3 style="margin-top:0; color:#2E7D32;">লাইভ আপডেট দিন</h3>
+                <h3 style="margin-top:0; color:#2E7D32;">লাইভ আপডেট যোগ করুন</h3>
                 <input type="text" id="uTemple" placeholder="মন্দিরের নাম...">
-                <input type="text" id="uDist" placeholder="জেলা...">
-                <textarea id="uInfo" placeholder="কি প্রসাদ বা উৎসব হচ্ছে?"></textarea>
+                <input type="text" id="uDist" list="districts" placeholder="জেলা...">
+                <textarea id="uInfo" placeholder="কি প্রসাদ বা অনুষ্ঠান হচ্ছে?"></textarea>
                 <button class="btn" onclick="postUpdate()">পাবলিশ করুন</button>
             </div>
             <hr>
-            <div id="userFeed">
-                <p style="text-align:center; color:#999;">কোনো লাইভ ইউজার আপডেট নেই।</p>
-            </div>
+            <div id="userFeed"></div>
         </div>
     </div>
 
-    <button class="share-fab" onclick="shareApp()" title="বন্ধুদের শেয়ার করুন">
-        📢
-    </button>
+    <button class="share-fab" onclick="shareApp()">📢</button>
 
     <script>
-        // সেকশন টগল
         function showSection(id) {
             document.getElementById('autoNews').style.display = (id === 'autoNews') ? 'block' : 'none';
             document.getElementById('userUpdate').style.display = (id === 'userUpdate') ? 'block' : 'none';
@@ -77,7 +83,6 @@
             event.currentTarget.classList.add('active');
         }
 
-        // অটোমেটিক নিউজ আনা
         async function fetchAutoNews() {
             const feed = document.getElementById('newsFeed');
             const query = 'বাংলাদেশের মন্দির পূজা উৎসব';
@@ -86,61 +91,41 @@
             try {
                 const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
                 const data = await res.json();
-                
                 let html = '';
-                data.items.slice(0, 10).forEach(item => {
+                data.items.slice(0, 12).forEach(item => {
                     html += `
-                        <div class="card">
-                            <span class="badge">সংবাদপত্র</span>
+                        <div class="card temple-item">
                             <div class="news-title">${item.title}</div>
                             <a href="${item.link}" target="_blank" class="news-link">বিস্তারিত পড়ুন →</a>
-                            <small style="color:#999;">${new Date(item.pubDate).toLocaleDateString('bn-BD')}</small>
+                            <a href="https://www.google.com/maps/search/${encodeURIComponent(item.title)}" target="_blank" class="map-link">📍 ম্যাপে লোকেশন দেখুন</a>
                         </div>
                     `;
                 });
                 feed.innerHTML = html;
                 document.getElementById('loader').style.display = 'none';
             } catch (err) {
-                document.getElementById('loader').innerText = "সংযোগ সমস্যা!";
+                document.getElementById('loader').innerText = "নেটওয়ার্ক সমস্যা!";
             }
         }
 
-        // ইউজার আপডেট পোস্ট
         function postUpdate() {
             const t = document.getElementById('uTemple').value;
             const d = document.getElementById('uDist').value;
             const i = document.getElementById('uInfo').value;
-            if(!t || !d || !i) return alert("সব পূরণ করুন!");
+            if(!t || !d || !i) return alert("সব ঘর পূরণ করুন!");
 
             const feed = document.getElementById('userFeed');
-            const time = new Date().toLocaleTimeString('bn-BD');
-            const newPost = `<div class="card" style="border-left-color:#4CAF50;"><span class="badge" style="background:#4CAF50;">লাইভ (${time})</span><h4>${t} (${d})</h4><p>${i}</p></div>`;
-            feed.innerHTML = (feed.innerHTML.includes('কোনো লাইভ')) ? newPost : newPost + feed.innerHTML;
-            
-            document.getElementById('uTemple').value = ''; 
-            document.getElementById('uDist').value = ''; 
-            document.getElementById('uInfo').value = '';
-            alert("ধন্যবাদ! তথ্যটি লাইভ হয়েছে।");
+            const newPost = `
+                <div class="card temple-item" style="border-left-color:#4CAF50;">
+                    <h4>${t} (${d})</h4>
+                    <p>${i}</p>
+                    <a href="https://www.google.com/maps/search/${encodeURIComponent(t + ' ' + d)}" target="_blank" class="map-link">📍 মন্দির ম্যাপে দেখুন</a>
+                </div>`;
+            feed.innerHTML = newPost + feed.innerHTML;
+            alert("তথ্য লাইভ হয়েছে!");
+            document.getElementById('uTemple').value=''; document.getElementById('uDist').value=''; document.getElementById('uInfo').value='';
         }
 
-        // শেয়ার করার ফাংশন
-        function shareApp() {
-            const shareData = {
-                title: 'মন্দির সেবা লাইভ',
-                text: 'বাংলাদেশের সব মন্দিরের অটো নিউজ এবং লাইভ প্রসাদ আপডেট পেতে এই অ্যাপটি ব্যবহার করুন!',
-                url: window.location.href // এটি আপনার গিটহাবের লিঙ্কটি অটো নিয়ে নেবে
-            };
-
-            if (navigator.share) {
-                navigator.share(shareData)
-                .catch((error) => console.log('Error sharing', error));
-            } else {
-                // ব্রাউজারে শেয়ার অপশন না থাকলে সরাসরি লিঙ্ক কপি করার মেসেজ
-                alert("আপনার ব্রাউজারে শেয়ার বাটন সাপোর্ট করছে না। এই লিঙ্কটি কপি করে শেয়ার করুন: " + window.location.href);
-            }
-        }
-
-        fetchAutoNews();
-    </script>
-</body>
-</html>
+        function searchTemple() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let items =
