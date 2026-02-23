@@ -3,81 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ডিজিটাল আড্ডা AI - পদক্ষেপ ডিজিটাল</title>
+    <title>মন্দির সেবা - অটো নিউজ ও শেয়ার</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
-        .ai-container { background: white; width: 100%; max-width: 450px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; border: 2px solid #ff9800; }
-        .header { background: #fff; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; }
-        .header h3 { color: #ff9800; margin: 0; font-size: 20px; }
-        .content-body { padding: 20px; }
-        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; background: #ff9800; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        button:hover { background: #e68a00; }
-        #resultArea { margin-top: 20px; padding: 15px; background: #fff8f0; border-radius: 8px; border: 1px solid #ffe0b2; min-height: 100px; line-height: 1.6; color: #333; }
-        .loading { color: #ff9800; font-style: italic; }
+        :root { --primary: #FF6F00; --accent: #FF3D00; --bg: #FFF3E0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; }
+        .navbar { background: var(--primary); padding: 15px; text-align: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 500px; margin: auto; padding: 15px; padding-bottom: 80px; }
+        
+        /* ট্যাব বাটন */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: #FFCC80; color: #E65100; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* কার্ড ডিজাইন */
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 5px solid var(--accent); }
+        .news-title { font-size: 16px; font-weight: bold; color: #BF360C; }
+        .news-link { color: #1877F2; text-decoration: none; font-size: 13px; font-weight: bold; display: block; margin-top: 8px; }
+        
+        /* ইনপুট বক্স */
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        .badge { background: #FF3D00; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-bottom: 5px; display: inline-block; }
+        
+        /* ভাসমান শেয়ার বাটন */
+        .share-fab { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .share-fab:hover { transform: scale(1.1); transition: 0.2s; }
     </style>
 </head>
 <body>
 
-<div class="ai-container">
-    <div class="header">
-        <h3>🤖 ডিজিটাল আড্ডা AI (বিশ্ব জ্ঞান)</h3>
+    <div class="navbar">
+        <h1>🚩 মন্দির সেবা লাইভ</h1>
+        <p style="margin:0; font-size: 12px;">অটো নিউজ ও ভক্তদের সরাসরি আপডেট</p>
     </div>
-    
-    <div class="content-body">
-        <input type="text" id="userInput" placeholder="Tense বা যেকোনো বিষয় লিখুন...">
-        <button onclick="askGeminiAI()">বিস্তারিত জানুন (BN + EN)</button>
 
-        <div id="resultArea">
-            অপেক্ষা করছি... একটি শব্দ লিখে সার্চ দিন।
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showSection('autoNews')">📰 পত্রিকার নিউজ</button>
+            <button class="tab-btn" onclick="showSection('userUpdate')">✍️ তথ্য দিন</button>
+        </div>
+
+        <div id="autoNews">
+            <div id="loader" style="text-align:center; padding:20px; color:var(--primary);">খবর সংগ্রহ করা হচ্ছে...</div>
+            <div id="newsFeed"></div>
+        </div>
+
+        <div id="userUpdate" style="display: none;">
+            <div class="card" style="border-left-color: #4CAF50;">
+                <h3 style="margin-top:0; color:#2E7D32;">লাইভ আপডেট দিন</h3>
+                <input type="text" id="uTemple" placeholder="মন্দিরের নাম...">
+                <input type="text" id="uDist" placeholder="জেলা...">
+                <textarea id="uInfo" placeholder="কি প্রসাদ বা উৎসব হচ্ছে?"></textarea>
+                <button class="btn" onclick="postUpdate()">পাবলিশ করুন</button>
+            </div>
+            <hr>
+            <div id="userFeed">
+                <p style="text-align:center; color:#999;">কোনো লাইভ ইউজার আপডেট নেই।</p>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // আপনার API KEY এখানে বসান
-    const MY_API_KEY = "এখানে_আপনার_API_KEY_বসান"; 
+    <button class="share-fab" onclick="shareApp()" title="বন্ধুদের শেয়ার করুন">
+        📢
+    </button>
 
-    async function askGeminiAI() {
-        const input = document.getElementById("userInput").value.trim();
-        const result = document.getElementById("resultArea");
-
-        if (!input) {
-            result.innerHTML = "<span style='color:red;'>দুঃখিত, দয়া করে একটি শব্দ লিখুন।</span>";
-            return;
+    <script>
+        // সেকশন টগল
+        function showSection(id) {
+            document.getElementById('autoNews').style.display = (id === 'autoNews') ? 'block' : 'none';
+            document.getElementById('userUpdate').style.display = (id === 'userUpdate') ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
-        result.innerHTML = "<span class='loading'>AI তথ্য খুঁজছে... দয়া করে অপেক্ষা করুন।</span>";
+        // অটোমেটিক নিউজ আনা
+        async function fetchAutoNews() {
+            const feed = document.getElementById('newsFeed');
+            const query = 'বাংলাদেশের মন্দির পূজা উৎসব';
+            const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=bn&gl=BD&ceid=BD:bn`;
 
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${MY_API_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: `Explain '${input}' in simple Bengali and English together. Use points or tables if needed.` }]
-                    }]
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                let formattedText = data.candidates[0].content.parts[0].text
-                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // বোল্ড টেক্সট ঠিক করা
-                    .replace(/\n/g, '<br>'); // নিউ লাইন ঠিক করা
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+                const data = await res.json();
                 
-                result.innerHTML = formattedText;
-            } else {
-                result.innerHTML = "দুঃখিত, সঠিক তথ্য পাওয়া যায়নি।";
+                let html = '';
+                data.items.slice(0, 10).forEach(item => {
+                    html += `
+                        <div class="card">
+                            <span class="badge">সংবাদপত্র</span>
+                            <div class="news-title">${item.title}</div>
+                            <a href="${item.link}" target="_blank" class="news-link">বিস্তারিত পড়ুন →</a>
+                            <small style="color:#999;">${new Date(item.pubDate).toLocaleDateString('bn-BD')}</small>
+                        </div>
+                    `;
+                });
+                feed.innerHTML = html;
+                document.getElementById('loader').style.display = 'none';
+            } catch (err) {
+                document.getElementById('loader').innerText = "সংযোগ সমস্যা!";
             }
-
-        } catch (error) {
-            result.innerHTML = "সার্ভারে সমস্যা হচ্ছে। আপনার API Key চেক করুন।";
-            console.error(error);
         }
-    }
-</script>
 
+        // ইউজার আপডেট পোস্ট
+        function postUpdate() {
+            const t = document.getElementById('uTemple').value;
+            const d = document.getElementById('uDist').value;
+            const i = document.getElementById('uInfo').value;
+            if(!t || !d || !i) return alert("সব পূরণ করুন!");
+
+            const feed = document.getElementById('userFeed');
+            const time = new Date().toLocaleTimeString('bn-BD');
+            const newPost = `<div class="card" style="border-left-color:#4CAF50;"><span class="badge" style="background:#4CAF50;">লাইভ (${time})</span><h4>${t} (${d})</h4><p>${i}</p></div>`;
+            feed.innerHTML = (feed.innerHTML.includes('কোনো লাইভ')) ? newPost : newPost + feed.innerHTML;
+            
+            document.getElementById('uTemple').value = ''; 
+            document.getElementById('uDist').value = ''; 
+            document.getElementById('uInfo').value = '';
+            alert("ধন্যবাদ! তথ্যটি লাইভ হয়েছে।");
+        }
+
+        // শেয়ার করার ফাংশন
+        function shareApp() {
+            const shareData = {
+                title: 'মন্দির সেবা লাইভ',
+                text: 'বাংলাদেশের সব মন্দিরের অটো নিউজ এবং লাইভ প্রসাদ আপডেট পেতে এই অ্যাপটি ব্যবহার করুন!',
+                url: window.location.href // এটি আপনার গিটহাবের লিঙ্কটি অটো নিয়ে নেবে
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                .catch((error) => console.log('Error sharing', error));
+            } else {
+                // ব্রাউজারে শেয়ার অপশন না থাকলে সরাসরি লিঙ্ক কপি করার মেসেজ
+                alert("আপনার ব্রাউজারে শেয়ার বাটন সাপোর্ট করছে না। এই লিঙ্কটি কপি করে শেয়ার করুন: " + window.location.href);
+            }
+        }
+
+        fetchAutoNews();
+    </script>
 </body>
 </html>
