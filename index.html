@@ -9,58 +9,135 @@
     <style>
         :root { --main-bg: #FFF5E6; --card-bg: white; --text-color: #333; --accent: #FF4500; }
         .dark-mode { --main-bg: #1a1a1a; --card-bg: #2d2d2d; --text-color: #eee; --accent: #FF8C00; }
-        
         body { font-family: sans-serif; background: var(--main-bg); color: var(--text-color); margin: 0; padding: 0; transition: 0.3s; }
-        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; position: relative; }
-        .container { padding: 15px; max-width: 500px; margin: auto; }
-        
-        /* ডার্ক মোড বাটন */
-        .mode-toggle { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 20px; cursor: pointer; }
-        
-        .card { background: var(--card-bg); padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .geeta-card { border-left: 5px solid #FFD700; font-style: italic; background: #fffdf0; color: #555; }
-        .dark-mode .geeta-card { background: #333; color: #ddd; }
-        
+        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 15px; position: relative; }
+        .container { padding: 10px; max-width: 500px; margin: auto; }
+        .mode-toggle { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+        .card { background: var(--card-bg); padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .geeta-card { border-left: 5px solid #FFD700; background: #fffdf0; }
+        .dark-mode .geeta-card { background: #333; }
+        .mantra-box { background: #f0f8ff; border-radius: 10px; padding: 10px; margin-top: 10px; font-size: 15px; color: #0056b3; font-weight: bold; text-align: center; border: 1px dashed #0056b3; }
+        .dark-mode .mantra-box { background: #1e2a38; color: #add8e6; border-color: #add8e6; }
+        .district-list { height: 250px; overflow-y: scroll; font-size: 14px; border: 1px solid #ddd; padding: 12px; border-radius: 8px; line-height: 1.6; background: #fafafa; }
+        .dark-mode .district-list { background: #222; border-color: #444; }
         input, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; background: var(--card-bg); color: var(--text-color); }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; color: white; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; text-decoration: none; display: block; text-align: center; margin-top: 5px; }
         .btn-pub { background: #28a745; }
-        .btn-yt { background: #FF0000; text-decoration: none; display: inline-block; text-align: center; }
-        
-        .section-title { font-weight: bold; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
-        .update-box { background: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 5px solid var(--accent); margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        
-        .footer { text-align: center; padding: 20px; margin-top: 30px; border: 1px dashed var(--accent); border-radius: 12px; font-size: 13px; }
-        .creator-name { color: var(--accent); font-weight: bold; font-size: 15px; }
+        .section-title { font-weight: bold; color: var(--accent); margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; display: flex; justify-content: space-between; }
+        .footer { text-align: center; padding: 15px; margin-top: 20px; border: 1px dashed var(--accent); border-radius: 12px; font-size: 12px; }
+        .creator-name { color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <button class="mode-toggle" onclick="toggleDarkMode()">🌙 ডার্ক মোড</button>
-    <span style="font-size: 18px; font-weight: bold;">॥ ওঁ তৎ সৎ ॥</span>
-    <h1 style="margin: 5px 0; font-size: 24px;">🚩 মন্দির সেবা</h1>
+    <span style="font-size: 16px; font-weight: bold;">॥ ওঁ তৎ সৎ ॥</span>
+    <h1 style="margin: 5px 0; font-size: 22px;">🚩 মন্দির সেবা</h1>
 </div>
 
 <div class="container">
-    <div class="card geeta-card" id="geetaBox">
-        <strong>📜 আজকের গীতার বাণী:</strong><br>
+    <div class="card geeta-card">
+        <div class="section-title">📜 আজকের গীতার বাণী</div>
         <p id="geetaText">"মনুষ্য তার বিশ্বাসের তৈরি, সে যেমন বিশ্বাস করে তেমনি সে হয়ে ওঠে।"</p>
+        <div class="mantra-box">
+            🙏 আজকের পবিত্র মন্ত্র:<br>
+            <span id="dailyMantra">ওঁ শান্তিঃ শান্তিঃ শান্তিঃ</span>
+        </div>
     </div>
 
     <div class="card">
-        <div class="section-title">📺 আরতি ও ভজন</div>
-        <a href="https://www.youtube.com/results?search_query=live+arti+temple" target="_blank" class="btn btn-yt">লাইভ আরতি দেখুন</a>
+        <div class="section-title">🏛️ ৬৪ জেলার প্রধান মন্দির ডিরেক্টরি</div>
+        <div class="district-list">
+            <b>ঢাকা বিভাগ:</b><br>
+            • ঢাকা: ঢাকেশ্বরী জাতীয় মন্দির, রমনা কালী মন্দির<br>
+            • গাজীপুর: শ্রী শ্রী কৃপাময়ী আনন্দময়ী মন্দির<br>
+            • নারায়ণগঞ্জ: লাঙ্গলবন্দ তীর্থ, লোকনাথ ব্রহ্মচারী আশ্রম<br>
+            • টাঙ্গাইল: নাগরপুর কেন্দ্রীয় মন্দির<br>
+            • মানিকগঞ্জ: শিব মন্দির<br>
+            • মুন্সীগঞ্জ: বাবা লোকনাথ মন্দির<br>
+            • নরসিংদী: লক্ষণ সাহার জমিদার বাড়ি মন্দির<br>
+            • ফরিদপুর: জগবন্ধু সুন্দর আশ্রম<br>
+            • গোপালগঞ্জ: শ্রীধাম ওড়াকান্দি ঠাকুর বাড়ি<br>
+            • মাদারীপুর: প্রণব মঠ<br>
+            • শরীয়তপুর: ধানুকা মনসা বাড়ি<br>
+            • রাজবাড়ী: রাধাগোবিন্দ জিউ মন্দির<br>
+            • কিশোরগঞ্জ: কুরুয়াইন চন্দ্রনাথ মন্দির<br><br>
+            
+            <b>খুলনা বিভাগ:</b><br>
+            • খুলনা: রূপসা মহাশ্মশান মন্দির, আর্য ধর্মসভা<br>
+            • ঝিনাইদহ: শ্রী শ্রী রামকৃষ্ণ মন্দির, কোটচাঁদপুর কালী মন্দির<br>
+            • বাগেরহাট: কোদলা মঠ (অযোধ্যা মঠ)<br>
+            • সাতক্ষীরা: যশোরেশ্বরী কালী মন্দির (শক্তিপীঠ)<br>
+            • যশোর: শ্রীধরপুর শিব মন্দির<br>
+            • মাগুরা: শ্রী শ্রী কাত্যায়নী মন্দির<br>
+            • নড়াইল: লোহাগড়া সিদ্ধেশ্বরী কালীবড়ি<br>
+            • কুষ্টিয়া: মহিষকুণ্ডি শিব মন্দির<br>
+            • চুয়াডাঙ্গা: দামুড়হুদা কেন্দ্রীয় মন্দির<br>
+            • মেহেরপুর: বল্লভপুর শিব মন্দির<br><br>
+
+            <b>চট্টগ্রাম বিভাগ:</b><br>
+            • চট্টগ্রাম: চন্দ্রনাথ মন্দির (সীতাকুণ্ড), চট্টেশ্বরী মন্দির<br>
+            • কক্সবাজার: আদিনাথ মন্দির (মহেশখালী)<br>
+            • কুমিল্লা: জগন্নাথ মন্দির, চণ্ডীমুড়া মন্দির<br>
+            • চাঁদপুর: শ্রী শ্রী জগন্নাথ মন্দির<br>
+            • ব্রাহ্মণবাড়িয়া: কালভৈরব মন্দির<br>
+            • ফেনী: জগন্নাথ মন্দির<br>
+            • নোয়াখালী: গান্ধী আশ্রম মন্দির<br>
+            • লক্ষ্মীপুর: রামকৃষ্ণ মিশন<br>
+            • রাঙ্গামাটি: রাজবন বিহার সংলগ্ন মন্দির<br>
+            • খাগড়াছড়ি: শান্তিপুর অরণ্য কুটির<br>
+            • বান্দরবান: কেন্দ্রীয় বৌদ্ধ বিহার সংলগ্ন মন্দির<br><br>
+
+            <b>রাজশাহী বিভাগ:</b><br>
+            • রাজশাহী: পুঠিয়া রাজবাড়ি মন্দির কমপ্লেক্স<br>
+            • বগুড়া: ভবানীপুর শক্তিপীঠ (করতোয়া)<br>
+            • পাবনা: জগন্নাথ মন্দির (হান্ডিয়াল)<br>
+            • নাটোর: রানী ভবানীর রাজবাড়ি মন্দির<br>
+            • নওগাঁ: কুশুম্বা মন্দির এলাকা<br>
+            • জয়পুরহাট: বেল আমলা শিব মন্দির<br>
+            • সিরাজগঞ্জ: নবরত্ন মন্দির<br>
+            • চাঁপাইনবাবগঞ্জ: জোড়া শিব মন্দির<br><br>
+
+            <b>সিলেট বিভাগ:</b><br>
+            • সিলেট: শ্রী শ্রী মহালক্ষ্মী মন্দির, শ্রীহট্ট আশ্রম<br>
+            • মৌলভীবাজার: নির্মাই শিব বাড়ি<br>
+            • হবিগঞ্জ: বিথঙ্গল আখড়া<br>
+            • সুনামগঞ্জ: পনতীর্থ ধাম<br><br>
+
+            <b>বরিশাল বিভাগ:</b><br>
+            • বরিশাল: উগ্রতারা মন্দির (শিকারপুর)<br>
+            • ঝালকাঠি: এন এস কামিনী মন্দির<br>
+            • পিরোজপুর: রায়েরকাঠি জমিদার বাড়ি মন্দির<br>
+            • ভোলা: শ্রী শ্রী মদনমোহন ঠাকুর বাড়ি<br>
+            • পটুয়াখালী: কুয়াকাটা রাধাকৃষ্ণ মন্দির<br>
+            • বরগুনা: কেন্দ্রীয় কালীবড়ি মন্দির<br><br>
+
+            <b>রংপুর বিভাগ:</b><br>
+            • দিনাজপুর: কান্তজিউ মন্দির (নবরত্ন)<br>
+            • রংপুর: শ্রী শ্রী করুণাময়ী কালীবড়ি<br>
+            • কুড়িগ্রাম: চিলমারী অষ্টমীর চর<br>
+            • গাইবান্ধা: গোবিন্দগঞ্জ কেন্দ্রীয় মন্দির<br>
+            • লালমনিরহাট: শ্রী শ্রী কেন্দ্রীয় রাধাগোবিন্দ মন্দির<br>
+            • নীলফামারী: ধর্মপাল গড় মন্দির<br>
+            • পঞ্চগড়: গোলকধাম মন্দির<br>
+            • ঠাকুরগাঁও: বালিয়াডাঙ্গী সূর্যপুরী মন্দির এলাকা<br><br>
+
+            <b>ময়মনসিংহ বিভাগ:</b><br>
+            • ময়মনসিংহ: শ্রী শ্রী আনন্দময়ী আশ্রম<br>
+            • নেত্রকোনা: বিরিশিরি আশ্রম<br>
+            • জামালপুর: দয়াময়ী মন্দির<br>
+            • শেরপুর: শ্রী শ্রী লোকনাথ মন্দির
+        </div>
     </div>
 
     <div class="card">
-        <div class="section-title">📅 উৎসব ক্যালেন্ডার ২০২৬</div>
-        <marquee scrollamount="3" style="color: var(--accent); font-weight: bold;">
-            শিবরাত্রি: ২৬ ফেব্রুয়ারি | দোল পূর্ণিমা: ৩ মার্চ | বাংলা নববর্ষ: ১৪ এপ্রিল | দুর্গা পূজা: ১৭ অক্টোবর
-        </marquee>
+        <div class="section-title">📰 ধর্মীয় খবর (লাইভ)</div>
+        <div id="newsContent" style="font-size: 14px;">লোড হচ্ছে...</div>
     </div>
 
     <div class="card">
-        <div class="section-title">✍️ নতুন তথ্য যোগ করুন</div>
+        <div class="section-title">✍️ নতুন আপডেট দিন</div>
         <input type="text" id="mName" placeholder="মন্দিরের নাম">
         <input type="text" id="mArea" placeholder="এলাকা/জেলা">
         <textarea id="mInfo" placeholder="অনুষ্ঠান বা প্রসাদের তথ্য..." rows="2"></textarea>
@@ -76,14 +153,10 @@
 </div>
 
 <script>
-    // ডার্ক মোড ফাংশন
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
-        let btn = document.querySelector('.mode-toggle');
-        btn.innerHTML = document.body.classList.contains('dark-mode') ? "☀️ লাইট মোড" : "🌙 ডার্ক মোড";
     }
 
-    // Firebase Config (আপনার আগের কি-গুলোই আছে)
     var firebaseConfig = {
         apiKey: "AIzaSyBIJw59geMwvYUSO50SaXwekTkzXibTcio",
         authDomain: "mandir-seba.firebaseapp.com",
@@ -94,29 +167,40 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.database();
 
+    function fetchNews() {
+        const rssUrl = 'https://news.google.com/rss/search?q=hinduism+bangladesh&hl=bn&gl=BD&ceid=BD:bn';
+        fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl))
+        .then(res => res.json()).then(data => {
+            let html = "";
+            if(data.items) {
+                data.items.slice(0, 3).forEach(item => {
+                    html += `• <a href="${item.link}" target="_blank" style="color:#FF4500; text-decoration:none; font-weight:bold;">${item.title}</a><br><br>`;
+                });
+                document.getElementById('newsContent').innerHTML = html;
+            }
+        });
+    }
+
     function publish() {
         var n = document.getElementById('mName').value, a = document.getElementById('mArea').value, i = document.getElementById('mInfo').value;
         if(n && a) {
             db.ref('temple_updates').push({ name: n, area: a, info: i, time: new Date().toLocaleTimeString() })
-            .then(() => { alert("সফলভাবে পাবলিশ হয়েছে!"); document.getElementById('mName').value=""; document.getElementById('mArea').value=""; document.getElementById('mInfo').value=""; });
-        } else { alert("নাম ও এলাকা দিন।"); }
+            .then(() => { alert("পাবলিশ হয়েছে!"); location.reload(); });
+        }
     }
 
     db.ref('temple_updates').on('value', function(snap) {
-        var l = document.getElementById('list');
-        l.innerHTML = "<h3 style='margin:10px 0;'>সাম্প্রতিক আপডেট:</h3>";
+        var l = document.getElementById('list'); l.innerHTML = "";
         snap.forEach(function(c) {
             var v = c.val();
-            l.innerHTML += `<div class="update-box">
-                <strong>${v.name}</strong> (${v.area})<br><small>সময়: ${v.time}</small>
-                <p>${v.info}</p>
-                <div style="display:flex; gap:10px;">
-                    <a href="https://www.google.com/maps/search/${encodeURIComponent(v.name + ' ' + v.area)}" target="_blank" style="background:#4285F4; color:white; padding:5px 10px; text-decoration:none; border-radius:5px; font-size:12px;">📍 ম্যাপ</a>
-                    <a href="whatsapp://send?text=${encodeURIComponent(v.name + ': ' + v.info)}" style="background:#25D366; color:white; padding:5px 10px; text-decoration:none; border-radius:5px; font-size:12px;">📲 শেয়ার</a>
-                </div>
+            l.innerHTML += `<div class="card" style="border-left:5px solid #FF4500;">
+                <b>${v.name}</b> (${v.area})<br><small>${v.time}</small><p>${v.info}</p>
+                <a href="whatsapp://send?text=${encodeURIComponent(v.name + ': ' + v.info)}" style="background:#25D366; color:white; padding:5px 10px; text-decoration:none; border-radius:5px; font-size:12px;">📲 শেয়ার</a>
             </div>`;
         });
     });
+
+    fetchNews();
 </script>
 </body>
 </html>
