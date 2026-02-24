@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -14,15 +15,14 @@
         input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
         .section { background: white; border-radius: 12px; padding: 15px; margin-top: 20px; border-top: 5px solid #FF4500; }
-        
-        /* রিফ্রেশ বাটনের ডিজাইন */
-        .section-title { font-weight: bold; color: #FF4500; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .refresh-btn { background: #FF4500; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        
+        .section-title { font-weight: bold; color: #FF4500; display: flex; justify-content: space-between; align-items: center; }
+        .refresh-btn { background: #FF4500; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
         .news-item { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; text-align: left; }
         .news-item a { color: #d35400; text-decoration: none; font-weight: bold; }
         .update-box { background: white; padding: 15px; border-radius: 12px; border-left: 8px solid #FF4500; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .share-btn { display: inline-block; margin-top: 10px; background: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .map-btn { background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; }
+        .share-btn { background: #25D366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -37,7 +37,6 @@
         <textarea id="mInfo" placeholder="আজকের সংবাদ বা প্রসাদের তথ্য..." rows="2"></textarea>
         <button class="btn-submit" onclick="publish()">লাইভ পাবলিশ</button>
     </div>
-    
     <div class="section">
         <div class="section-title">
             <span>📰 ধর্মীয় লাইভ নিউজ</span>
@@ -45,10 +44,8 @@
         </div>
         <div id="newsContent">নিউজ লোড হচ্ছে...</div>
     </div>
-    
     <div id="list"></div>
 </div>
-
 <script>
     var firebaseConfig = {
         apiKey: "AIzaSyBIJw59geMwvYUSO50SaXwekTkzXibTcio",
@@ -60,37 +57,28 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.database();
 
-    // নিউজ রিফ্রেশ করার ফাংশন
     function fetchNews() {
-        document.getElementById('newsContent').innerHTML = "<small>নতুন নিউজ খোঁজা হচ্ছে...</small>";
+        document.getElementById('newsContent').innerHTML = "নিউজ রিফ্রেশ হচ্ছে...";
         const rssUrl = 'https://news.google.com/rss/search?q=hinduism+bangladesh&hl=bn&gl=BD&ceid=BD:bn';
         fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl))
         .then(res => res.json()).then(data => {
             let html = "";
-            if(data.items && data.items.length > 0) {
+            if(data.items) {
                 data.items.slice(0, 5).forEach(item => {
+                    // এখানে target="_blank" রাখা হয়েছে যাতে সরাসরি ভিডিও ও অডিও সহ নিউজ ওপেন হয়
                     html += `<div class="news-item">🔸 <a href="${item.link}" target="_blank">${item.title}</a></div>`;
                 });
                 document.getElementById('newsContent').innerHTML = html;
-            } else {
-                document.getElementById('newsContent').innerHTML = "এই মুহূর্তে কোনো নতুন নিউজ পাওয়া যায়নি।";
             }
-        }).catch(() => { 
-            document.getElementById('newsContent').innerHTML = "নিউজ লোড হতে সমস্যা হচ্ছে। রিফ্রেশ বাটনে আবার ক্লিক করুন।"; 
-        });
+        }).catch(() => { document.getElementById('newsContent').innerHTML = "নিউজ লোড হতে সমস্যা হচ্ছে।"; });
     }
 
     function publish() {
         var n = document.getElementById('mName').value, a = document.getElementById('mArea').value, i = document.getElementById('mInfo').value;
         if(n && a) {
             db.ref('temple_updates').push({ name: n, area: a, info: i, time: new Date().toLocaleTimeString() })
-            .then(() => { 
-                alert("সফলভাবে পাবলিশ হয়েছে!"); 
-                document.getElementById('mName').value=""; 
-                document.getElementById('mArea').value=""; 
-                document.getElementById('mInfo').value=""; 
-            });
-        } else { alert("মন্দিরের নাম ও এলাকা দিন।"); }
+            .then(() => { alert("সফলভাবে পাবলিশ হয়েছে!"); document.getElementById('mName').value=""; document.getElementById('mArea').value=""; document.getElementById('mInfo').value=""; });
+        } else { alert("নাম ও এলাকা দিন।"); }
     }
 
     db.ref('temple_updates').on('value', function(snap) {
@@ -101,12 +89,13 @@
             l.innerHTML += `<div class="update-box">
                 <strong>${v.name}</strong> (${v.area})<br><small>সময়: ${v.time}</small>
                 <p>${v.info}</p>
-                <a href="whatsapp://send?text=${encodeURIComponent(v.name + ': ' + v.info)}" class="share-btn">📲 শেয়ার</a>
+                <div class="btn-group">
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name + ' ' + v.area)}" target="_blank" class="map-btn">📍 ম্যাপ</a>
+                    <a href="whatsapp://send?text=${encodeURIComponent(v.name + ': ' + v.info)}" class="share-btn">📲 শেয়ার</a>
+                </div>
             </div>`;
         });
     });
-
-    // অ্যাপ খোলার সাথে সাথে প্রথমবার নিউজ লোড হবে
     fetchNews();
 </script>
 </body>
