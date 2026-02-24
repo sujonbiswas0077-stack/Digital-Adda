@@ -9,15 +9,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        body { font-family: 'SolaimanLipi', sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
-        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        body { font-family: sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
+        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 25px 15px; }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
-        .update-box { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 6px solid #FF4500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: -30px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .update-card { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 6px solid #FF4500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .map-btn { display: inline-block; margin-top: 10px; background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; }
-    </small>
     </style>
 </head>
 <body>
@@ -33,85 +32,62 @@
         <input type="text" id="mName" placeholder="মন্দিরের নাম...">
         <input type="text" id="mArea" placeholder="জেলা বা এলাকা...">
         <textarea id="mInfo" placeholder="আজকের বিশেষ সংবাদ বা প্রসাদ..." rows="3"></textarea>
-        <button onclick="publishWithLocation()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
+        <button class="btn-submit" onclick="publish()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
     </div>
 
-    <div id="updatesContainer">
-        <p style="text-align:center;">তথ্য লোড হচ্ছে...</p>
+    <div id="list">
+        <p style="text-align:center; margin-top: 20px;">আপডেট লোড হচ্ছে...</p>
     </div>
 </div>
 
 <script>
-    // আপনার ফায়ারবেস কনফিগারেশন (সরাসরি আপনার আইডি দিয়ে সেট করা)
+    // Firebase Config
     var firebaseConfig = {
         apiKey: "AIzaSyBIJw59geMwvYUSO50SaXwekTkzXibTcio",
         authDomain: "mandir-seba.firebaseapp.com",
         projectId: "mandir-seba",
         databaseURL: "https://mandir-seba-default-rtdb.firebaseio.com",
-        storageBucket: "mandir-seba.firebasestorage.app",
-        messagingSenderId: "657641053910",
         appId: "1:657641053910:web:2557c1b1580303871e3377"
     };
 
-    // ফায়ারবেস শুরু করা
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    var database = firebase.database();
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
 
-    // লোকেশন নিয়ে ডাটা পাঠানো
-    function publishWithLocation() {
+    function publish() {
         var n = document.getElementById('mName').value;
         var a = document.getElementById('mArea').value;
         var i = document.getElementById('mInfo').value;
 
-        if(!n || !a) { alert("নাম ও এলাকা দিন!"); return; }
+        if(!n || !a) { alert("নাম ও এলাকা লিখুন"); return; }
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var mapUrl = "https://www.google.com/maps?q=" + position.coords.latitude + "," + position.coords.longitude;
-                saveData(n, a, i, mapUrl);
-            }, function() {
-                saveData(n, a, i, ""); // লোকেশন না পেলে ম্যাপ ছাড়া সেভ হবে
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var mapUrl = "https://www.google.com/maps?q=" + pos.coords.latitude + "," + pos.coords.longitude;
+            db.ref('temple_updates').push({
+                name: n, area: a, info: i, map: mapUrl, time: new Date().toLocaleTimeString()
+            }).then(() => {
+                alert("পাবলিশ হয়েছে!");
+                document.getElementById('mName').value = "";
+                document.getElementById('mInfo').value = "";
             });
-        } else {
-            saveData(n, a, i, "");
-        }
-    }
-
-    function saveData(name, area, info, map) {
-        database.ref('live_updates').push({
-            name: name,
-            area: area,
-            info: info,
-            map: map,
-            time: new Date().toLocaleTimeString()
-        }).then(function() {
-            alert("সফলভাবে পাবলিশ হয়েছে!");
-            document.getElementById('mName').value = "";
-            document.getElementById('mInfo').value = "";
+        }, () => {
+            alert("লোকেশন পারমিশন ছাড়া ম্যাপ আসবে না।");
         });
     }
 
-    // ডাটা রিয়েলটাইম দেখানো (undefined সমস্যা আর হবে না)
-    database.ref('live_updates').on('value', function(snapshot) {
-        var container = document.getElementById('updatesContainer');
-        container.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
-        snapshot.forEach(function(child) {
-            var val = child.val();
-            var mapBtn = val.map ? '<a href="' + val.map + '" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>' : "";
-            
-            container.innerHTML += `
-                <div class="update-box">
-                    <strong>${val.name}</strong> (${val.area})<br>
-                    <small>সময়: ${val.time}</small>
-                    <p>${val.info}</p>
-                    ${mapBtn}
-                </div>
-            `;
+    db.ref('temple_updates').on('value', function(snap) {
+        var listDiv = document.getElementById('list');
+        listDiv.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
+        snap.forEach(function(child) {
+            var d = child.val();
+            listDiv.innerHTML += `
+                <div class="update-card">
+                    <strong>${d.name}</strong> (${d.area})<br>
+                    <small>সময়: ${d.time}</small>
+                    <p>${d.info}</p>
+                    <a href="${d.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>
+                </div>`;
         });
     });
 </script>
-
 </body>
 </html>
