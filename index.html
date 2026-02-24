@@ -3,81 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মন্দির সেবা</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <title>🚩 মন্দির সেবা</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        :root { --primary: #FF6F00; --bg: #FFF5E6; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; }
-        .navbar { background: var(--primary); padding: 25px; text-align: center; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .om { font-size: 14px; background: white; color: var(--primary); display: inline-block; padding: 2px 15px; border-radius: 20px; margin-top: 8px; font-weight: bold; }
-        .container { max-width: 500px; margin: auto; padding: 15px; padding-bottom: 80px; }
-        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 6px solid #FF3D00; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        body { font-family: 'SolaimanLipi', sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
+        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .update-box { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 6px solid #FF4500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
+        .map-btn { display: inline-block; margin-top: 10px; background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    </small>
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1 style="margin:0;">🚩 মন্দির সেবা</h1>
-        <div class="om">ওম তৎ সৎ</div>
+
+<div class="header">
+    <h1>🚩 মন্দির সেবা</h1>
+    <p>সব মন্দিরের লাইভ আপডেট ও লোকেশন</p>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3>নতুন আপডেট দিন</h3>
+        <input type="text" id="mName" placeholder="মন্দিরের নাম...">
+        <input type="text" id="mArea" placeholder="জেলা বা এলাকা...">
+        <textarea id="mInfo" placeholder="আজকের বিশেষ সংবাদ বা প্রসাদ..." rows="3"></textarea>
+        <button onclick="publishWithLocation()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
     </div>
-    <div class="container">
-        <div class="card">
-            <h3 style="margin:0; color:var(--primary);">নতুন আপডেট দিন</h3>
-            <input type="text" id="tName" placeholder="মন্দিরের নাম...">
-            <input type="text" id="tDist" placeholder="জেলা বা এলাকা...">
-            <textarea id="tInfo" placeholder="আজ কি বিশেষ পূজা বা প্রসাদ আছে?"></textarea>
-            <button class="btn" onclick="postToDB()">লাইভ পাবলিশ করুন</button>
-        </div>
-        <h3 style="color:#E65100;">📢 লাইভ মন্দির আপডেট:</h3>
-        <div id="userFeed">অপেক্ষা করুন...</div>
+
+    <div id="updatesContainer">
+        <p style="text-align:center;">তথ্য লোড হচ্ছে...</p>
     </div>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AlzaSyBIJw59geMwvYUSO5OSaXwekTkzXibTcio",
-            authDomain: "mandir-seba.firebaseapp.com",
-            databaseURL: "https://mandir-seba-default-rtdb.firebaseio.com",
-            projectId: "mandir-seba",
-            storageBucket: "mandir-seba.firebasestorage.app",
-            messagingSenderId: "657641053910",
-            appId: "1:657641053910:web:2557c1b1580303871e3377"
-        };
+</div>
+
+<script>
+    // আপনার ফায়ারবেস কনফিগারেশন (সরাসরি আপনার আইডি দিয়ে সেট করা)
+    var firebaseConfig = {
+        apiKey: "AIzaSyBIJw59geMwvYUSO50SaXwekTkzXibTcio",
+        authDomain: "mandir-seba.firebaseapp.com",
+        projectId: "mandir-seba",
+        databaseURL: "https://mandir-seba-default-rtdb.firebaseio.com",
+        storageBucket: "mandir-seba.firebasestorage.app",
+        messagingSenderId: "657641053910",
+        appId: "1:657641053910:web:2557c1b1580303871e3377"
+    };
+
+    // ফায়ারবেস শুরু করা
+    if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        function postToDB() {
-            const name = document.getElementById('tName').value;
-            const dist = document.getElementById('tDist').value;
-            const info = document.getElementById('tInfo').value;
-            if(name && info) {
-                db.ref('updates/').push({
-                    name: name,
-                    dist: dist,
-                    info: info,
-                    time: new Date().toLocaleString('bn-BD')
-                });
-                document.getElementById('tName').value=''; 
-                document.getElementById('tInfo').value='';
-                alert("পাবলিশ সফল!");
-            }
+    }
+    var database = firebase.database();
+
+    // লোকেশন নিয়ে ডাটা পাঠানো
+    function publishWithLocation() {
+        var n = document.getElementById('mName').value;
+        var a = document.getElementById('mArea').value;
+        var i = document.getElementById('mInfo').value;
+
+        if(!n || !a) { alert("নাম ও এলাকা দিন!"); return; }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var mapUrl = "https://www.google.com/maps?q=" + position.coords.latitude + "," + position.coords.longitude;
+                saveData(n, a, i, mapUrl);
+            }, function() {
+                saveData(n, a, i, ""); // লোকেশন না পেলে ম্যাপ ছাড়া সেভ হবে
+            });
+        } else {
+            saveData(n, a, i, "");
         }
-        db.ref('updates/').on('value', (snap) => {
-            const data = snap.val();
-            let html = '';
-            if(data) {
-                for(let id in data) {
-                    html = `
-                    <div class="card">
-                        <h4 style="margin:0; color:#BF360C;">${data[id].name} (${data[id].dist})</h4>
-                        <p style="margin:10px 0;">${data[id].info}</p>
-                        <small>সময়: ${data[id].time}</small>
-                    </div>` + html;
-                }
-                document.getElementById('userFeed').innerHTML = html;
-            } else {
-                document.getElementById('userFeed').innerHTML = "আপাতত কোনো আপডেট নেই।";
-            }
+    }
+
+    function saveData(name, area, info, map) {
+        database.ref('live_updates').push({
+            name: name,
+            area: area,
+            info: info,
+            map: map,
+            time: new Date().toLocaleTimeString()
+        }).then(function() {
+            alert("সফলভাবে পাবলিশ হয়েছে!");
+            document.getElementById('mName').value = "";
+            document.getElementById('mInfo').value = "";
         });
-    </script>
+    }
+
+    // ডাটা রিয়েলটাইম দেখানো (undefined সমস্যা আর হবে না)
+    database.ref('live_updates').on('value', function(snapshot) {
+        var container = document.getElementById('updatesContainer');
+        container.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
+        snapshot.forEach(function(child) {
+            var val = child.val();
+            var mapBtn = val.map ? '<a href="' + val.map + '" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>' : "";
+            
+            container.innerHTML += `
+                <div class="update-box">
+                    <strong>${val.name}</strong> (${val.area})<br>
+                    <small>সময়: ${val.time}</small>
+                    <p>${val.info}</p>
+                    ${mapBtn}
+                </div>
+            `;
+        });
+    });
+</script>
+
 </body>
 </html>
