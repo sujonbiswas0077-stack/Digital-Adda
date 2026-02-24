@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -12,46 +11,46 @@
     <style>
         body { font-family: sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
         .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; position: sticky; top: 0; z-index: 100; }
-        .om-shanti { font-size: 22px; font-weight: bold; margin-bottom: 5px; display: block; }
         .container { padding: 15px; max-width: 500px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; margin-top: -25px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
-
-        .info-box { background: white; border-radius: 10px; border-top: 5px solid #FF4500; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .section-title { color: #FF4500; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 18px; }
-        .fest-scroll { max-height: 200px; overflow-y: auto; }
-        .fest-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-
-        .update-box { background: white; padding: 15px; border-radius: 10px; border-left: 6px solid #FF4500; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        .info-box { background: white; border-radius: 10px; border-top: 5px solid #FF4500; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .news-item { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; text-align: left; }
+        .news-item a { color: #007bff; text-decoration: none; font-weight: bold; }
+        
+        .update-box { background: white; padding: 15px; border-radius: 10px; border-left: 6px solid #FF4500; margin-bottom: 15px; text-align: left; }
         .map-btn { display: inline-block; margin-top: 10px; background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <span class="om-shanti">॥ ওঁ তৎ সৎ ॥</span>
-    <h1 style="margin:5px 0; font-size:24px;">🚩 মন্দির সেবা</h1>
-    <p style="margin:0; font-size:14px;">সঠিক ম্যাপ ও ২০২৬ উৎসব ক্যালেন্ডার</p>
+    <span style="font-size:20px; font-weight:bold;">॥ ওঁ তৎ সৎ ॥</span>
+    <h1>🚩 মন্দির সেবা</h1>
 </div>
 
 <div class="container">
     <div class="card">
         <input type="text" id="mName" placeholder="মন্দিরের নাম...">
-        <input type="text" id="mArea" placeholder="জেলা বা সঠিক ঠিকানা (যেমন: যশোর)...">
+        <input type="text" id="mArea" placeholder="যশোর/ঢাকা/সঠিক জেলা...">
         <textarea id="mInfo" placeholder="আজকের সংবাদ বা প্রসাদ..." rows="2"></textarea>
         <button class="btn-submit" onclick="publish()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
     </div>
 
-    <div class="info-box">
-        <div class="section-title">📅 উৎসব ক্যালেন্ডার ২০২৬</div>
-        <div class="fest-scroll" id="festivalList">
-            </div>
+    <div class="info-box" style="border-top-color: #4285F4;">
+        <h4 style="margin:0 0 10px 0; color:#4285F4;">📰 ধর্মীয় লাইভ নিউজ (পত্রিকা)</h4>
+        <div id="newsContent">নিউজ লোড হচ্ছে...</div>
     </div>
 
-    <div id="newsBox" class="info-box" style="border-top-color: #4285F4;">
-        <div class="section-title" style="color: #4285F4;">📰 ধর্মীয় লাইভ নিউজ</div>
-        <div id="newsContent">খবর লোড হচ্ছে...</div>
+    <div class="info-box">
+        <h4 style="margin:0 0 10px 0; color:#FF4500;">📅 আসন্ন উৎসব ২০২৬</h4>
+        <div style="font-size:14px;">
+            <p><b>১৫ ফেব:</b> মহাশিবরাত্রি</p>
+            <p><b>০৩ মার্চ:</b> দোলযাত্রা</p>
+            <p><b>২০ অক্টো:</b> বিজয়া দশমী (দুর্গাপূজা)</p>
+        </div>
     </div>
 
     <div id="list"></div>
@@ -65,64 +64,54 @@
         databaseURL: "https://mandir-seba-default-rtdb.firebaseio.com",
         appId: "1:657641053910:web:2557c1b1580303871e3377"
     };
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.database();
 
-    // উৎসবের তালিকা
-    const festivals = [
-        {d: "১৫ ফেব", n: "মহাশিবরাত্রি"}, {d: "০৩ মার্চ", n: "দোলযাত্রা"},
-        {d: "২৬ মার্চ", n: "শ্রীরাম নবমী"}, {d: "১৫ এপ্রিল", n: "পহেলা বৈশাখ"},
-        {d: "১৭ জুন", n: "রথযাত্রা"}, {d: "১৬ আগস্ট", n: "জন্মাষ্টমী"},
-        {d: "২০ অক্টো", n: "বিজয়া দশমী"}, {d: "০৯ নভে", n: "কালীপূজা"}
-    ];
-    let fHtml = "";
-    festivals.forEach(f => { fHtml += `<div class="fest-item"><b>${f.d}</b> <span>${f.n}</span></div>`; });
-    document.getElementById('festivalList').innerHTML = fHtml;
+    // নিউজ লোড করার নতুন সিস্টেম
+    function fetchNews() {
+        // এই লিঙ্কটি সরাসরি নিউজ টেনে আনবে
+        const feedUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/religion/hinduism/rss';
+        
+        fetch(feedUrl)
+        .then(res => res.json())
+        .then(data => {
+            let html = "";
+            if(data.items) {
+                data.items.slice(0, 5).forEach(item => {
+                    html += `<div class="news-item">🔹 <a href="${item.link}" target="_blank">${item.title}</a></div>`;
+                });
+                document.getElementById('newsContent').innerHTML = html;
+            }
+        })
+        .catch(() => {
+            document.getElementById('newsContent').innerHTML = "নিউজ পেতে ইন্টারনেট সংযোগ চেক করুন।";
+        });
+    }
 
-    // পাবলিশ ফাংশন (ম্যাপ ফিক্সড)
     function publish() {
         var n = document.getElementById('mName').value;
         var a = document.getElementById('mArea').value;
         var i = document.getElementById('mInfo').value;
         
         if(n && a) {
-            // আপনার দেওয়া ঠিকানাকে গুগল ম্যাপের লিঙ্কে রূপান্তর
-            var mapUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(n + " " + a);
+            // এখন ম্যাপ আপনার নিজের ঠিকানা নয়, বরং ইনপুট করা জায়গার ঠিকানা দেখাবে
+            var mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(n + " " + a);
             
             db.ref('temple_updates').push({
                 name: n, area: a, info: i, map: mapUrl, time: new Date().toLocaleTimeString()
             }).then(() => {
-                alert("সফলভাবে পাবলিশ হয়েছে!");
+                alert("পাবলিশ হয়েছে!");
                 document.getElementById('mName').value = ""; document.getElementById('mArea').value = ""; document.getElementById('mInfo').value = "";
             });
-        } else { alert("মন্দিরের নাম ও এলাকা দিন"); }
+        }
     }
 
-    // নিউজ ফিড
-    function fetchNews() {
-        const rss = encodeURIComponent('https://www.prothomalo.com/religion/hinduism/rss');
-        fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rss}`)
-        .then(r => r.json()).then(data => {
-            let h = "";
-            data.items.slice(0, 5).forEach(item => {
-                h += `<a href="${item.link}" target="_blank" style="display:block; color:#333; text-decoration:none; padding:8px 0; border-bottom:1px solid #eee; font-size:14px;">🔹 ${item.title}</a>`;
-            });
-            document.getElementById('newsContent').innerHTML = h;
-        });
-    }
-
-    // লিস্ট দেখানো
     db.ref('temple_updates').on('value', function(snap) {
         var l = document.getElementById('list');
         l.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
         snap.forEach(function(c) {
-            var val = c.val();
-            l.innerHTML += `
-                <div class="update-box">
-                    <strong>${val.name}</strong> (${val.area})<br>
-                    <p>${val.info}</p>
-                    <a href="${val.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>
-                </div>`;
+            var v = c.val();
+            l.innerHTML += `<div class="update-box"><b>${v.name}</b> (${v.area})<p>${v.info}</p><a href="${v.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a></div>`;
         });
     });
 
