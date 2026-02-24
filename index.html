@@ -9,48 +9,60 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        body { font-family: sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
-        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; position: sticky; top: 0; z-index: 100; }
+        body { font-family: 'SolaimanLipi', sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
+        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 25px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .om-shanti { font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px; }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; margin-top: -25px; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: -30px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; transition: 0.3s; }
         
-        .info-box { background: white; border-radius: 10px; border-top: 5px solid #FF4500; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .news-item { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; text-align: left; }
-        .news-item a { color: #007bff; text-decoration: none; font-weight: bold; }
+        .section { background: white; border-radius: 12px; padding: 15px; margin-top: 20px; border-top: 5px solid #FF4500; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .section-title { font-weight: bold; color: #FF4500; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; display: flex; align-items: center; }
         
-        .update-box { background: white; padding: 15px; border-radius: 10px; border-left: 6px solid #FF4500; margin-bottom: 15px; text-align: left; }
-        .map-btn { display: inline-block; margin-top: 10px; background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 13px; }
+        .fest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
+        .fest-item { background: #fff8f0; padding: 6px; border-radius: 5px; border: 1px solid #ffe0b2; }
+
+        .news-item { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 15px; text-align: left; }
+        .news-item a { color: #d35400; text-decoration: none; font-weight: bold; }
+
+        .update-box { background: white; padding: 15px; border-radius: 12px; border-left: 8px solid #FF4500; margin-top: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: left; }
+        .map-btn { display: inline-block; margin-top: 12px; background: #4285F4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <span style="font-size:20px; font-weight:bold;">॥ ওঁ তৎ সৎ ॥</span>
+    <span class="om-shanti">॥ ওঁ তৎ সৎ ॥</span>
     <h1>🚩 মন্দির সেবা</h1>
+    <p>উৎসব ক্যালেন্ডার ২০২৬ ও সঠিক ম্যাপ আপডেট</p>
 </div>
 
 <div class="container">
     <div class="card">
-        <input type="text" id="mName" placeholder="মন্দিরের নাম...">
-        <input type="text" id="mArea" placeholder="যশোর/ঢাকা/সঠিক জেলা...">
-        <textarea id="mInfo" placeholder="আজকের সংবাদ বা প্রসাদ..." rows="2"></textarea>
+        <input type="text" id="mName" placeholder="মন্দিরের নাম (যেমন: রামকৃষ্ণ আশ্রম)">
+        <input type="text" id="mArea" placeholder="এলাকা/জেলা (যেমন: যশোর)">
+        <textarea id="mInfo" placeholder="আজকের সংবাদ বা প্রসাদের তথ্য..." rows="2"></textarea>
         <button class="btn-submit" onclick="publish()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
     </div>
 
-    <div class="info-box" style="border-top-color: #4285F4;">
-        <h4 style="margin:0 0 10px 0; color:#4285F4;">📰 ধর্মীয় লাইভ নিউজ (পত্রিকা)</h4>
-        <div id="newsContent">নিউজ লোড হচ্ছে...</div>
+    <div class="section">
+        <div class="section-title">📅 উৎসব ক্যালেন্ডার ২০২৬</div>
+        <div class="fest-grid">
+            <div class="fest-item"><b>১৫ ফেব:</b> মহাশিবরাত্রি</div>
+            <div class="fest-item"><b>০৩ মার্চ:</b> দোলযাত্রা</div>
+            <div class="fest-item"><b>২৬ মার্চ:</b> শ্রীরাম নবমী</div>
+            <div class="fest-item"><b>১৫ এপ্রিল:</b> পহেলা বৈশাখ</div>
+            <div class="fest-item"><b>১৭ জুন:</b> রথযাত্রা</div>
+            <div class="fest-item"><b>১৬ আগস্ট:</b> জন্মাষ্টমী</div>
+            <div class="fest-item"><b>২০ অক্টো:</b> দুর্গাপূজা</div>
+            <div class="fest-item"><b>০৯ নভে:</b> কালীপূজা</div>
+        </div>
     </div>
 
-    <div class="info-box">
-        <h4 style="margin:0 0 10px 0; color:#FF4500;">📅 আসন্ন উৎসব ২০২৬</h4>
-        <div style="font-size:14px;">
-            <p><b>১৫ ফেব:</b> মহাশিবরাত্রি</p>
-            <p><b>০৩ মার্চ:</b> দোলযাত্রা</p>
-            <p><b>২০ অক্টো:</b> বিজয়া দশমী (দুর্গাপূজা)</p>
-        </div>
+    <div class="section" style="border-top-color: #4285F4;">
+        <div class="section-title" style="color: #4285F4;">📰 ধর্মীয় লাইভ নিউজ</div>
+        <div id="newsContent">নিউজ লোড হচ্ছে...</div>
     </div>
 
     <div id="list"></div>
@@ -67,51 +79,53 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.database();
 
-    // নিউজ লোড করার নতুন সিস্টেম
+    // নিউজ সংগ্রহের উন্নত ফাংশন
     function fetchNews() {
-        // এই লিঙ্কটি সরাসরি নিউজ টেনে আনবে
-        const feedUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/religion/hinduism/rss';
-        
-        fetch(feedUrl)
-        .then(res => res.json())
-        .then(data => {
+        fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.prothomalo.com/religion/hinduism/rss')
+        .then(res => res.json()).then(data => {
             let html = "";
-            if(data.items) {
-                data.items.slice(0, 5).forEach(item => {
-                    html += `<div class="news-item">🔹 <a href="${item.link}" target="_blank">${item.title}</a></div>`;
-                });
-                document.getElementById('newsContent').innerHTML = html;
-            }
-        })
-        .catch(() => {
-            document.getElementById('newsContent').innerHTML = "নিউজ পেতে ইন্টারনেট সংযোগ চেক করুন।";
+            data.items.slice(0, 5).forEach(item => {
+                html += `<div class="news-item">🔸 <a href="${item.link}" target="_blank">${item.title}</a></div>`;
+            });
+            document.getElementById('newsContent').innerHTML = html;
+        }).catch(() => {
+            document.getElementById('newsContent').innerHTML = "পত্রিকা থেকে নিউজ লোড করা যাচ্ছে না।";
         });
     }
 
+    // তথ্য সেভ করা ও ম্যাপ তৈরি
     function publish() {
         var n = document.getElementById('mName').value;
         var a = document.getElementById('mArea').value;
         var i = document.getElementById('mInfo').value;
         
         if(n && a) {
-            // এখন ম্যাপ আপনার নিজের ঠিকানা নয়, বরং ইনপুট করা জায়গার ঠিকানা দেখাবে
-            var mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(n + " " + a);
+            // আপনার দেওয়া ঠিকানায় ম্যাপ সেট হবে
+            var searchStr = n + " " + a;
+            var mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(searchStr);
             
             db.ref('temple_updates').push({
                 name: n, area: a, info: i, map: mapUrl, time: new Date().toLocaleTimeString()
             }).then(() => {
-                alert("পাবলিশ হয়েছে!");
+                alert("সফলভাবে পাবলিশ হয়েছে!");
                 document.getElementById('mName').value = ""; document.getElementById('mArea').value = ""; document.getElementById('mInfo').value = "";
             });
-        }
+        } else { alert("নাম ও এলাকা দিন।"); }
     }
 
+    // লিস্ট রিফ্রেশ করা
     db.ref('temple_updates').on('value', function(snap) {
         var l = document.getElementById('list');
-        l.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
+        l.innerHTML = "<h3 style='margin-top:20px; color:#333;'>সাম্প্রতিক মন্দির সেবা আপডেট:</h3>";
         snap.forEach(function(c) {
             var v = c.val();
-            l.innerHTML += `<div class="update-box"><b>${v.name}</b> (${v.area})<p>${v.info}</p><a href="${v.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a></div>`;
+            l.innerHTML += `
+                <div class="update-box">
+                    <strong>${v.name}</strong> (${v.area})<br>
+                    <small style="color:#666;">সময়: ${v.time}</small>
+                    <p style="margin:10px 0;">${v.info}</p>
+                    <a href="${v.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>
+                </div>`;
         });
     });
 
