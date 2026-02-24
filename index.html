@@ -10,18 +10,21 @@
 
     <style>
         body { font-family: sans-serif; background: #FFF5E6; margin: 0; padding: 0; }
-        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 25px 15px; }
+        .header { background: linear-gradient(to bottom, #FF8C00, #FF4500); color: white; text-align: center; padding: 20px; }
+        .om-shanti { font-size: 22px; font-weight: bold; margin-bottom: 5px; display: block; }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: -30px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: -20px; text-align: center; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .update-card { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 6px solid #FF4500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-submit { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .update-box { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 6px solid #FF4500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .map-btn { display: inline-block; margin-top: 10px; background: #4285F4; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .footer-shanti { text-align: center; font-weight: bold; color: #FF4500; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="header">
+    <span class="om-shanti">॥ ওঁ তৎ সৎ ॥</span>
     <h1>🚩 মন্দির সেবা</h1>
     <p>সব মন্দিরের লাইভ আপডেট ও লোকেশন</p>
 </div>
@@ -35,13 +38,10 @@
         <button class="btn-submit" onclick="publish()">লাইভ পাবলিশ ও ম্যাপ তৈরি</button>
     </div>
 
-    <div id="list">
-        <p style="text-align:center; margin-top: 20px;">আপডেট লোড হচ্ছে...</p>
-    </div>
+    <div id="list"></div>
 </div>
 
 <script>
-    // Firebase Config
     var firebaseConfig = {
         apiKey: "AIzaSyBIJw59geMwvYUSO50SaXwekTkzXibTcio",
         authDomain: "mandir-seba.firebaseapp.com",
@@ -50,7 +50,7 @@
         appId: "1:657641053910:web:2557c1b1580303871e3377"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     var db = firebase.database();
 
     function publish() {
@@ -58,36 +58,36 @@
         var a = document.getElementById('mArea').value;
         var i = document.getElementById('mInfo').value;
 
-        if(!n || !a) { alert("নাম ও এলাকা লিখুন"); return; }
+        if(!n || !a) { alert("নাম ও এলাকা দিন"); return; }
 
         navigator.geolocation.getCurrentPosition(function(pos) {
             var mapUrl = "https://www.google.com/maps?q=" + pos.coords.latitude + "," + pos.coords.longitude;
             db.ref('temple_updates').push({
                 name: n, area: a, info: i, map: mapUrl, time: new Date().toLocaleTimeString()
             }).then(() => {
-                alert("পাবলিশ হয়েছে!");
+                alert("সফলভাবে পাবলিশ হয়েছে!");
                 document.getElementById('mName').value = "";
                 document.getElementById('mInfo').value = "";
             });
-        }, () => {
-            alert("লোকেশন পারমিশন ছাড়া ম্যাপ আসবে না।");
-        });
+        }, () => { alert("লোকেশন পারমিশন প্রয়োজন।"); });
     }
 
     db.ref('temple_updates').on('value', function(snap) {
         var listDiv = document.getElementById('list');
-        listDiv.innerHTML = "<h3>সাম্প্রতিক আপডেট:</h3>";
+        listDiv.innerHTML = "<h3 style='text-align:center;'>সাম্প্রতিক সেবামূলক আপডেট</h3>";
         snap.forEach(function(child) {
             var d = child.val();
             listDiv.innerHTML += `
-                <div class="update-card">
-                    <strong>${d.name}</strong> (${d.area})<br>
+                <div class="update-box">
+                    <b style="font-size:18px;">${d.name}</b> (${d.area})<br>
                     <small>সময়: ${d.time}</small>
                     <p>${d.info}</p>
                     <a href="${d.map}" target="_blank" class="map-btn">📍 ম্যাপে দেখুন</a>
+                    <span class="footer-shanti">ওঁ তৎ সৎ</span>
                 </div>`;
         });
     });
 </script>
+
 </body>
 </html>
